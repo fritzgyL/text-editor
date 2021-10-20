@@ -1,6 +1,17 @@
 package fr.istic.aco.editorLI.model;
 
 public class EngineImpl implements Engine {
+	
+	private StringBuilder buffer;
+	private String clipboard;
+	private final Selection selection;
+	
+	public EngineImpl(Selection selection) {
+		this.buffer = new StringBuilder();
+		this.clipboard = "";
+		this.selection = selection;
+	}
+	
     /**
      * Provides access to the selection control object
      *
@@ -9,7 +20,7 @@ public class EngineImpl implements Engine {
     @Override
     public Selection getSelection() {
         // TODO
-        return null;
+        return this.selection;
     }
 
     /**
@@ -20,7 +31,7 @@ public class EngineImpl implements Engine {
     @Override
     public String getBufferContents() {
         // TODO
-        return null;
+        return this.buffer.toString();
     }
 
     /**
@@ -31,7 +42,7 @@ public class EngineImpl implements Engine {
     @Override
     public String getClipboardContents() {
         // TODO
-        return null;
+        return this.clipboard;
     }
 
     /**
@@ -41,7 +52,11 @@ public class EngineImpl implements Engine {
      */
     @Override
     public void cutSelectedText() {
-        // TODO
+    	int startIndex = selection.getBeginIndex();
+    	int endIndex = selection.getEndIndex();
+        String newText = buffer.substring(startIndex, endIndex);
+        buffer.replace(startIndex, endIndex, "");
+        clipboard = newText;
     }
 
     /**
@@ -51,7 +66,9 @@ public class EngineImpl implements Engine {
      */
     @Override
     public void copySelectedText() {
-        // TODO
+    	int startIndex = selection.getBeginIndex();
+    	int endIndex = selection.getEndIndex();
+    	this.clipboard = buffer.substring(startIndex, endIndex);
     }
 
     /**
@@ -60,7 +77,10 @@ public class EngineImpl implements Engine {
      */
     @Override
     public void pasteClipboard() {
-        // TODO
+    	int startIndex = selection.getBeginIndex();
+    	int endIndex = selection.getEndIndex();
+        buffer.replace(startIndex, endIndex,clipboard);
+    	this.clipboard = "";
     }
 
     /**
@@ -70,7 +90,10 @@ public class EngineImpl implements Engine {
      */
     @Override
     public void insert(String s) {
-
+    	int startIndex = selection.getBeginIndex();
+    	int endIndex = selection.getEndIndex();
+    	buffer.replace(startIndex, endIndex, "");
+    	buffer.insert(startIndex, s);
     }
 
     /**
@@ -78,6 +101,8 @@ public class EngineImpl implements Engine {
      */
     @Override
     public void delete() {
-
+    	int startIndex = selection.getBeginIndex();
+    	int endIndex = selection.getEndIndex();
+        buffer.replace(startIndex, endIndex, "");
     }
 }

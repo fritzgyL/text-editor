@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import fr.istic.aco.editorLI.model.Engine;
 import fr.istic.aco.editorLI.model.EngineImpl;
 import fr.istic.aco.editorLI.model.Selection;
+import fr.istic.aco.editorLI.model.SelectionImpl;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -15,7 +16,8 @@ class EngineTest {
 
     @org.junit.jupiter.api.BeforeEach
     void setUp() {
-        engine = new EngineImpl();
+    	Selection selection = new SelectionImpl();
+        engine = new EngineImpl(selection);
     }
 
     private void todo() {
