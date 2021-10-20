@@ -1,4 +1,4 @@
-package fr.istic.aco.editorLI.receiver;
+package fr.istic.aco.editorLI.app.receiver;
 
 /**
  * Main API for the text editing engine

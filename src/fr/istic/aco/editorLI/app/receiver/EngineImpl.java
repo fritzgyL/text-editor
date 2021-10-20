@@ -1,4 +1,4 @@
-package fr.istic.aco.editorLI.receiver;
+package fr.istic.aco.editorLI.app.receiver;
 
 public class EngineImpl implements Engine {
 	
