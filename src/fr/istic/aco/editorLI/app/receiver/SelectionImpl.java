@@ -13,7 +13,7 @@ public class SelectionImpl implements Selection{
 	/*
 	 * TODO
 	 * add constructor method
-	 *parse buffer in constructor
+	 *parse buffer in constructor(add parameter buffer)
 	 *init beginIndex and endIndex
 	 */
 	
