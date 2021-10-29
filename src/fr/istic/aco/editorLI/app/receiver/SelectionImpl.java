@@ -1,4 +1,4 @@
-package fr.istic.aco.editorLI.model;
+package fr.istic.aco.editorLI.app.receiver;
 
 import java.nio.Buffer;
 
@@ -9,6 +9,13 @@ public class SelectionImpl implements Selection{
 	public static final int BUFFER_BEGIN_INDEX = 0;
 
 	private StringBuffer my_buffer;
+	
+	/*
+	 * TODO
+	 * add constructor method
+	 *parse buffer in constructor
+	 *init beginIndex and endIndex
+	 */
 	
 	/**
      * Fournit l'indice du premier caractère désigné
