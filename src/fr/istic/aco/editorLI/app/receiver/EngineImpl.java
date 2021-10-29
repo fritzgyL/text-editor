@@ -93,6 +93,8 @@ public class EngineImpl implements Engine {
 		int startIndex = selection.getBeginIndex();
 		// buffer.replace(startIndex, endIndex, "");
 		buffer.insert(startIndex, s);
+		selection.setBeginIndex(buffer.length());
+		selection.setEndIndex(buffer.length());
 	}
 
 	/**
