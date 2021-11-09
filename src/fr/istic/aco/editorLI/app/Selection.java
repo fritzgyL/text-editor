@@ -1,4 +1,5 @@
-package fr.istic.aco.editorLI.app.receiver;
+package fr.istic.aco.editorLI.app;
+
 
 /**
  * Provides access to selection control operations

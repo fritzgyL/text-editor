@@ -1,4 +1,4 @@
-package fr.istic.aco.editorLI.app.receiver;
+package fr.istic.aco.editorLI.app;
 
 public class EngineImpl implements Engine {
 
@@ -77,7 +77,7 @@ public class EngineImpl implements Engine {
 	public void pasteClipboard() {
 		int startIndex = selection.getBeginIndex();
 		int endIndex = selection.getEndIndex();
-		if(!clipboard.isEmpty()) {
+		if (!clipboard.isEmpty()) {
 			buffer.replace(startIndex, endIndex, clipboard);
 			this.clipboard = "";
 		}

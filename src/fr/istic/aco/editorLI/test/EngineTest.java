@@ -3,10 +3,10 @@ package fr.istic.aco.editorLI.test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import fr.istic.aco.editorLI.app.receiver.Engine;
-import fr.istic.aco.editorLI.app.receiver.EngineImpl;
-import fr.istic.aco.editorLI.app.receiver.Selection;
-import fr.istic.aco.editorLI.app.receiver.SelectionImpl;
+import fr.istic.aco.editorLI.app.Engine;
+import fr.istic.aco.editorLI.app.EngineImpl;
+import fr.istic.aco.editorLI.app.Selection;
+import fr.istic.aco.editorLI.app.SelectionImpl;
 
 import static org.junit.jupiter.api.Assertions.*;
 
