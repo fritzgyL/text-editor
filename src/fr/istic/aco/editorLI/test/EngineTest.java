@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import fr.istic.aco.editorLI.app.receiver.Engine;
 import fr.istic.aco.editorLI.app.receiver.EngineImpl;
 import fr.istic.aco.editorLI.app.receiver.Selection;
-import fr.istic.aco.editorLI.app.receiver.SelectionImpl;
+import fr.istic.aco.editorLI.app.receiver.MySelectionImpl;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,7 +19,7 @@ class EngineTest {
 	@org.junit.jupiter.api.BeforeEach
 	void setUp() {
 		buffer = new StringBuilder();
-		selection = new SelectionImpl(buffer);
+		selection = new MySelectionImpl(buffer);
 		engine = new EngineImpl(buffer, selection);
 	}
 
@@ -91,12 +91,21 @@ class EngineTest {
 
 	@Test
 	void pasteClipboard() {
-		assertEquals("", engine.getClipboardContents());
 		engine.insert("hey");
 		engine.getSelection().setBeginIndex(0);
 		engine.getSelection().setEndIndex(2);
+		engine.copySelectedText();
+		assertEquals("he", engine.getClipboardContents());
+		engine.getSelection().setBeginIndex(3);
+		engine.getSelection().setEndIndex(3);
 		engine.pasteClipboard();
+		assertEquals("heyhe", engine.getBufferContents());
+	}
+	
+	@Test
+	void pasteEmptyClipboard() {
 		assertEquals("", engine.getClipboardContents());
-		assertEquals("hey", engine.getBufferContents());
+		engine.pasteClipboard();
+		assertEquals("", engine.getBufferContents());
 	}
 }

@@ -107,7 +107,4 @@ public class EngineImpl implements Engine {
 		buffer.delete(startIndex, endIndex);
 	}
 
-	public StringBuilder getBuffer() {
-		return buffer;
-	}
 }

@@ -5,17 +5,17 @@ import fr.istic.aco.editorLI.app.invoker.TextEditor;
 import fr.istic.aco.editorLI.app.receiver.Engine;
 import fr.istic.aco.editorLI.app.receiver.EngineImpl;
 import fr.istic.aco.editorLI.app.receiver.Selection;
-import fr.istic.aco.editorLI.app.receiver.SelectionImpl;
+import fr.istic.aco.editorLI.app.receiver.MySelectionImpl;
 
 public class App {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		StringBuilder buffer = new StringBuilder();
-		Selection selection = new SelectionImpl(buffer);
+		Selection selection = new MySelectionImpl(buffer);
 		Engine engine = new EngineImpl(buffer, selection);
 		InsertTextCommand insertCommand = new InsertTextCommand(engine);
-		@SuppressWarnings("unused")
 		TextEditor textEditor = new TextEditor(insertCommand);
+		insertCommand.setEditor(textEditor);
 	}
 }
