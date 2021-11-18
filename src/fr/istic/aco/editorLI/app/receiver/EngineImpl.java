@@ -77,9 +77,11 @@ public class EngineImpl implements Engine {
 	public void pasteClipboard() {
 		int startIndex = selection.getBeginIndex();
 		int endIndex = selection.getEndIndex();
-		if(!clipboard.isEmpty()) {
+		if (!clipboard.isEmpty()) {
 			buffer.replace(startIndex, endIndex, clipboard);
-			this.clipboard = "";
+			selection.setBeginIndex(startIndex+1);
+			selection.setEndIndex(startIndex+1);
+			
 		}
 	}
 
@@ -91,10 +93,15 @@ public class EngineImpl implements Engine {
 	@Override
 	public void insert(String s) {
 		int startIndex = selection.getBeginIndex();
-		// buffer.replace(startIndex, endIndex, "");
-		buffer.insert(startIndex, s);
-		selection.setBeginIndex(buffer.length());
-		selection.setEndIndex(buffer.length());
+		int endIndex = selection.getEndIndex();
+		buffer.replace(startIndex, endIndex, s);
+		if (endIndex != startIndex) {
+			selection.setEndIndex(startIndex);
+		} else {
+			selection.setBeginIndex(buffer.length());
+			selection.setEndIndex(buffer.length());
+		}
+
 	}
 
 	/**
@@ -104,7 +111,17 @@ public class EngineImpl implements Engine {
 	public void delete() {
 		int startIndex = selection.getBeginIndex();
 		int endIndex = selection.getEndIndex();
-		buffer.delete(startIndex, endIndex);
+		if (buffer.length() > 0) {
+			if (endIndex > startIndex) {
+				buffer.delete(startIndex, endIndex);
+				selection.setEndIndex(startIndex);
+			} else if (endIndex == startIndex) {
+				buffer.delete(startIndex - 1, endIndex);
+				selection.setBeginIndex(endIndex - 1);
+				selection.setEndIndex(endIndex - 1);
+			}
+		}
+
 	}
 
 }

@@ -28,10 +28,22 @@ class EngineTest {
 //    }
 
 	@DisplayName("Buffer must be empty after initialisation")
+	@Test
 	void getSelection() {
 		Selection selection = engine.getSelection();
 		assertEquals(selection.getBufferBeginIndex(), selection.getBeginIndex());
 		assertEquals("", engine.getBufferContents());
+	}
+	
+	@Test
+	void testInsert() {
+		assertEquals("", engine.getBufferContents());
+		engine.insert("hey");
+		assertEquals("hey", engine.getBufferContents());
+		engine.getSelection().setBeginIndex(3);
+		engine.getSelection().setEndIndex(3);
+		engine.insert("a");
+		assertEquals("heya", engine.getBufferContents());
 	}
 
 	@Test
@@ -42,18 +54,29 @@ class EngineTest {
 		assertEquals("hey", engine.getBufferContents());
 		engine.insert("hey");
 		assertEquals("heyhey", engine.getBufferContents());
+		engine.delete();
+		assertEquals("heyhe", engine.getBufferContents());
 	}
 
 	@Test
 	void testDelete() {
 		engine.insert("hey");
 		engine.getSelection().setBeginIndex(0);
-		engine.getSelection().setEndIndex(2);
-		engine.delete();
-		assertEquals("y", engine.getBufferContents());
-		engine.getSelection().setEndIndex(1);
+		engine.getSelection().setEndIndex(3);
 		engine.delete();
 		assertEquals("", engine.getBufferContents());
+		engine.insert("hey");
+		System.out.println(engine.getSelection().getBeginIndex());
+		engine.delete();
+		assertEquals("he", engine.getBufferContents());
+		engine.delete();
+		engine.delete();
+		assertEquals("", engine.getBufferContents());
+		engine.delete();
+		assertEquals("", engine.getBufferContents());
+
+
+		
 	}
 
 	@Test
@@ -62,26 +85,26 @@ class EngineTest {
 		engine.insert("hey");
 		assertEquals("", engine.getClipboardContents());
 		engine.getSelection().setBeginIndex(0);
-		engine.getSelection().setEndIndex(2);
+		engine.getSelection().setEndIndex(3);
 		engine.cutSelectedText();
-		assertEquals("he", engine.getClipboardContents());
+		assertEquals("hey", engine.getClipboardContents());
 	}
 
 	@Test
 	void cutSelectedText() {
-		assertEquals("", engine.getClipboardContents());
 		engine.insert("hey");
 		engine.getSelection().setBeginIndex(0);
-		engine.getSelection().setEndIndex(2);
+		engine.getSelection().setEndIndex(1);
 		engine.cutSelectedText();
-		assertEquals("he", engine.getClipboardContents());
-		assertEquals("y", engine.getBufferContents());
+		assertEquals("h", engine.getClipboardContents());
+		assertEquals("ey", engine.getBufferContents());
 	}
 
 	@Test
 	void copySelectedText() {
-		assertEquals("", engine.getClipboardContents());
 		engine.insert("hey");
+		engine.copySelectedText();
+		assertEquals("", engine.getClipboardContents());
 		engine.getSelection().setBeginIndex(0);
 		engine.getSelection().setEndIndex(2);
 		engine.copySelectedText();
@@ -93,13 +116,16 @@ class EngineTest {
 	void pasteClipboard() {
 		engine.insert("hey");
 		engine.getSelection().setBeginIndex(0);
-		engine.getSelection().setEndIndex(2);
+		engine.getSelection().setEndIndex(1);
 		engine.copySelectedText();
-		assertEquals("he", engine.getClipboardContents());
+		assertEquals("h", engine.getClipboardContents());
 		engine.getSelection().setBeginIndex(3);
 		engine.getSelection().setEndIndex(3);
 		engine.pasteClipboard();
-		assertEquals("heyhe", engine.getBufferContents());
+		assertEquals("heyh", engine.getBufferContents());
+		engine.pasteClipboard();
+		assertEquals("heyhh", engine.getBufferContents());
+
 	}
 	
 	@Test

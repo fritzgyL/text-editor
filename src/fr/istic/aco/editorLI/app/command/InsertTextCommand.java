@@ -20,7 +20,6 @@ public class InsertTextCommand implements ICommand {
 	@Override
 	public void execute() {
 		engine.insert(Character.toString(editor.getTextToInsert()));
-		//System.out.println(engine.getSelection().getBeginIndex());
 		System.out.println(engine.getBufferContents());
 	}
 
