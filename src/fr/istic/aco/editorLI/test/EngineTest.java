@@ -44,6 +44,11 @@ class EngineTest {
 		engine.getSelection().setEndIndex(3);
 		engine.insert("a");
 		assertEquals("heya", engine.getBufferContents());
+		engine.getSelection().setBeginIndex(0);
+		engine.getSelection().setEndIndex(1);
+		engine.insert("a");
+		assertEquals("aeya", engine.getBufferContents());
+
 	}
 
 	@Test

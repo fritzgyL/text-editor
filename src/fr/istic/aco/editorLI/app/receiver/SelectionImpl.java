@@ -55,7 +55,7 @@ public class SelectionImpl implements Selection {
 	@Override
 	public int getBufferEndIndex() {
 		// TODO Auto-generated method stub
-		return my_buffer.toString().length();
+		return my_buffer.toString().length()-1;
 	}
 
 	/**
@@ -85,7 +85,7 @@ public class SelectionImpl implements Selection {
 	@Override
 	public void setEndIndex(int endIndex) {
 		// TODO Auto-generated method stub
-		if (beginIndex >= getBufferBeginIndex() & beginIndex <= getBufferEndIndex()) {
+		if (endIndex >= getBufferBeginIndex() & endIndex <= getBufferEndIndex()) {
 			try {
 				this.endIndex = endIndex;
 			} catch (IndexOutOfBoundsException e) {

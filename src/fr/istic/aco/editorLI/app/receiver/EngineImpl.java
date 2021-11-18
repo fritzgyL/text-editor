@@ -79,9 +79,9 @@ public class EngineImpl implements Engine {
 		int endIndex = selection.getEndIndex();
 		if (!clipboard.isEmpty()) {
 			buffer.replace(startIndex, endIndex, clipboard);
-			selection.setBeginIndex(startIndex+1);
-			selection.setEndIndex(startIndex+1);
-			
+			selection.setBeginIndex(startIndex + 1);
+			selection.setEndIndex(startIndex + 1);
+
 		}
 	}
 
@@ -112,10 +112,10 @@ public class EngineImpl implements Engine {
 		int startIndex = selection.getBeginIndex();
 		int endIndex = selection.getEndIndex();
 		if (buffer.length() > 0) {
-			if (endIndex > startIndex) {
+			if (endIndex != startIndex) {
 				buffer.delete(startIndex, endIndex);
 				selection.setEndIndex(startIndex);
-			} else if (endIndex == startIndex) {
+			} else {
 				buffer.delete(startIndex - 1, endIndex);
 				selection.setBeginIndex(endIndex - 1);
 				selection.setEndIndex(endIndex - 1);
