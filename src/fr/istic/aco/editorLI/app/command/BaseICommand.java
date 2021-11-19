@@ -3,26 +3,31 @@ package fr.istic.aco.editorLI.app.command;
 import fr.istic.aco.editorLI.app.invoker.TextEditor;
 import fr.istic.aco.editorLI.app.receiver.Engine;
 
-public class InsertTextCommand implements ICommand {
+public abstract class BaseICommand implements ICommand {
+	protected Engine engine;
+	protected TextEditor editor;
 
-	private Engine engine;
-	private TextEditor editor;
-
-	public InsertTextCommand(Engine engine) {
+	public BaseICommand(Engine engine) {
 		this.engine = engine;
 		this.editor = null;
 	}
 
+	/**
+	 * @param editor the text editor that invokes the commands injects editor
+	 */
 	public void setEditor(TextEditor editor) {
 		this.editor = editor;
 	}
 
-	@Override
-	public void execute() {
+	/**
+	 * set the selection of the engine buffer
+	 */
+	public void setSelection() {
 		engine.getSelection().setBeginIndex(editor.getSelectionStartIndex());
 		engine.getSelection().setEndIndex(editor.getSelectionEndIndex());
-		engine.insert(Character.toString(editor.getCharToInsert()));
-		System.out.println(engine.getBufferContents());
 	}
+
+	@Override
+	public abstract void execute();
 
 }

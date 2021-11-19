@@ -10,10 +10,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
-import javax.swing.event.MenuKeyEvent;
 
 import fr.istic.aco.editorLI.app.command.ICommand;
-import fr.istic.aco.editorLI.app.command.InsertTextCommand;
 
 public class TextEditor extends JFrame implements KeyListener {
 	private static final long serialVersionUID = 1L;
@@ -30,15 +28,18 @@ public class TextEditor extends JFrame implements KeyListener {
 	private JMenuItem delete = new JMenuItem("Delete");
 
 	private ICommand insertCommand;
+	private ICommand deleteCommand;
+
 	private char charToInsert;
 	private int selectionStartIndex;
 	private int selectionEndIndex;
 
-	public TextEditor(ICommand insertCommand) {
+	public TextEditor(ICommand insertCommand, ICommand deleteCommand) {
 		super("Text Editor");
 		this.selectionStartIndex = 0;
 		this.selectionEndIndex = 0;
 		this.insertCommand = insertCommand;
+		this.deleteCommand = deleteCommand;
 		charToInsert = '\0';
 
 		textArea = new JTextArea();
@@ -90,7 +91,7 @@ public class TextEditor extends JFrame implements KeyListener {
 	public void keyTyped(KeyEvent e) {
 		char character = e.getKeyChar();
 		if (isAValidChar(character)) {
-			insertChar(character);
+			insert(character);
 		}
 	}
 
@@ -98,13 +99,13 @@ public class TextEditor extends JFrame implements KeyListener {
 	public void keyPressed(KeyEvent e) {
 		switch (e.getKeyCode()) {
 		case KeyEvent.VK_BACK_SPACE:
-			System.out.println("Backspace");
+			delete();
 			break;
 		case KeyEvent.VK_DELETE:
-			System.out.println("Delete");
+			delete();
 			break;
 		case KeyEvent.VK_SPACE:
-			insertChar(' ');
+			insert(' ');
 			break;
 		default:
 			break;
@@ -140,9 +141,16 @@ public class TextEditor extends JFrame implements KeyListener {
 	 * @param character the character to insert in the buffer insert character in
 	 *                  the buffer
 	 */
-	public void insertChar(char character) {
+	public void insert(char character) {
 		charToInsert = character;
 		insertCommand.execute();
+	}
+
+	/**
+	 * delete the actual selection in the buffer
+	 */
+	public void delete() {
+		deleteCommand.execute();
 	}
 
 	/**
@@ -153,7 +161,7 @@ public class TextEditor extends JFrame implements KeyListener {
 		String patternAlphanumeric = "^[\\p{L}0-9]*$";
 		String patternSymbol = "[.;!?\\-/$\"'()@#&|\\{}=*-+=%§¤£¨µ°:]";
 		String letter = Character.toString(character);
-		return letter.matches(patternAlphanumeric) || letter.matches(patternSymbol) ;
+		return letter.matches(patternAlphanumeric) || letter.matches(patternSymbol);
 	}
 
 	/**
