@@ -31,24 +31,28 @@ public class TextEditor extends JFrame implements KeyListener {
 
 	private ICommand insertCommand;
 	private char charToInsert;
+	private int selectionStartIndex;
+	private int selectionEndIndex;
 
 	public TextEditor(ICommand insertCommand) {
 		super("Text Editor");
+		this.selectionStartIndex = 0;
+		this.selectionEndIndex = 0;
+		this.insertCommand = insertCommand;
+		charToInsert = '\0';
+
 		textArea = new JTextArea();
 		scrollPane = new JScrollPane(textArea);
 		textArea.addKeyListener(this);
 		textArea.addCaretListener(new CaretListener() {
 			@Override
 			public void caretUpdate(CaretEvent e) {
-				System.out.println("start: " + textArea.getSelectionStart());
-				System.out.println("end: " + textArea.getSelectionEnd());
+				updateSelection();
 			}
 		});
 		initMenu();
 		initFrame();
 		setVisible(true);
-		this.insertCommand = insertCommand;
-		charToInsert = '\0';
 	}
 
 	/**
@@ -112,6 +116,27 @@ public class TextEditor extends JFrame implements KeyListener {
 	}
 
 	/**
+	 * @return the character to insert in the buffer
+	 */
+	public char getCharToInsert() {
+		return charToInsert;
+	}
+
+	/**
+	 * @return the index of the selection start
+	 */
+	public int getSelectionStartIndex() {
+		return selectionStartIndex;
+	}
+
+	/**
+	 * @return the index of the selection end
+	 */
+	public int getSelectionEndIndex() {
+		return selectionEndIndex;
+	}
+
+	/**
 	 * @param character the character to insert in the buffer insert character in
 	 *                  the buffer
 	 */
@@ -121,19 +146,22 @@ public class TextEditor extends JFrame implements KeyListener {
 	}
 
 	/**
-	 * @return the character to insert in the buffer
-	 */
-	public char getCharToInsert() {
-		return charToInsert;
-	}
-
-	/**
 	 * @param character the paramater we want to check if it's valid
 	 * @return if character is a valid alphanumeric character or a ponctuation
 	 */
 	public boolean isAValidChar(char character) {
+		String patternAlphanumeric = "^[\\p{L}0-9]*$";
+		String patternSymbol = "[.;!?\\-/$\"'()@#&|\\{}=*-+=%§¤£¨µ°:]";
 		String letter = Character.toString(character);
-		return letter.matches("^(?!\\d+$)(?:[a-zA-Z0-9][a-zA-Z0-9 @&$]*)?");
+		return letter.matches(patternAlphanumeric) || letter.matches(patternSymbol) ;
+	}
+
+	/**
+	 * Automatically update selection index when user makes a selection in the GUI
+	 */
+	private void updateSelection() {
+		selectionStartIndex = textArea.getSelectionStart();
+		selectionEndIndex = textArea.getSelectionEnd();
 	}
 
 }

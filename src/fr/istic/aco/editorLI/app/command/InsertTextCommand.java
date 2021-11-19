@@ -19,6 +19,8 @@ public class InsertTextCommand implements ICommand {
 
 	@Override
 	public void execute() {
+		engine.getSelection().setBeginIndex(editor.getSelectionStartIndex());
+		engine.getSelection().setEndIndex(editor.getSelectionEndIndex());
 		engine.insert(Character.toString(editor.getCharToInsert()));
 		System.out.println(engine.getBufferContents());
 	}
