@@ -19,7 +19,7 @@ public class InsertTextCommand implements ICommand {
 
 	@Override
 	public void execute() {
-		engine.insert(Character.toString(editor.getTextToInsert()));
+		engine.insert(Character.toString(editor.getCharToInsert()));
 		System.out.println(engine.getBufferContents());
 	}
 

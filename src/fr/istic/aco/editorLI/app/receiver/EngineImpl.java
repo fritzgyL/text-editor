@@ -5,11 +5,18 @@ public class EngineImpl implements Engine {
 	private StringBuilder buffer;
 	private String clipboard;
 	private final Selection selection;
+	private int startIndex;
+	private int endIndex;
 
 	public EngineImpl(StringBuilder buffer, Selection selection) {
 		this.selection = selection;
 		this.buffer = buffer;
 		this.clipboard = "";
+	}
+
+	public void setUpSelectionIndex(int start, int end) {
+		startIndex = start;
+		endIndex = end;
 	}
 
 	/**
@@ -19,7 +26,6 @@ public class EngineImpl implements Engine {
 	 */
 	@Override
 	public Selection getSelection() {
-		// TODO
 		return this.selection;
 	}
 
@@ -30,7 +36,6 @@ public class EngineImpl implements Engine {
 	 */
 	@Override
 	public String getBufferContents() {
-		// TODO
 		return this.buffer.toString();
 	}
 
@@ -51,11 +56,14 @@ public class EngineImpl implements Engine {
 	 */
 	@Override
 	public void cutSelectedText() {
-		int startIndex = selection.getBeginIndex();
-		int endIndex = selection.getEndIndex();
+		setUpSelectionIndex(selection.getBeginIndex(), selection.getEndIndex());
 		String newText = buffer.substring(startIndex, endIndex);
-		buffer.replace(startIndex, endIndex, "");
-		clipboard = newText;
+		if (newText != "") {
+			buffer.delete(startIndex, endIndex);
+			clipboard = newText;
+			selection.setBeginIndex(startIndex);
+			selection.setEndIndex(startIndex);
+		}
 	}
 
 	/**
@@ -64,9 +72,11 @@ public class EngineImpl implements Engine {
 	 */
 	@Override
 	public void copySelectedText() {
-		int startIndex = selection.getBeginIndex();
-		int endIndex = selection.getEndIndex();
-		this.clipboard = buffer.substring(startIndex, endIndex);
+		setUpSelectionIndex(selection.getBeginIndex(), selection.getEndIndex());
+		String newText = buffer.substring(startIndex, endIndex);
+		if (newText != "") {
+			this.clipboard = buffer.substring(startIndex, endIndex);
+		}
 	}
 
 	/**
@@ -75,13 +85,11 @@ public class EngineImpl implements Engine {
 	 */
 	@Override
 	public void pasteClipboard() {
-		int startIndex = selection.getBeginIndex();
-		int endIndex = selection.getEndIndex();
+		setUpSelectionIndex(selection.getBeginIndex(), selection.getEndIndex());
 		if (!clipboard.isEmpty()) {
 			buffer.replace(startIndex, endIndex, clipboard);
 			selection.setBeginIndex(startIndex + 1);
 			selection.setEndIndex(startIndex + 1);
-
 		}
 	}
 
@@ -92,8 +100,7 @@ public class EngineImpl implements Engine {
 	 */
 	@Override
 	public void insert(String s) {
-		int startIndex = selection.getBeginIndex();
-		int endIndex = selection.getEndIndex();
+		setUpSelectionIndex(selection.getBeginIndex(), selection.getEndIndex());
 		buffer.replace(startIndex, endIndex, s);
 		if (endIndex != startIndex) {
 			selection.setEndIndex(startIndex);
@@ -109,8 +116,7 @@ public class EngineImpl implements Engine {
 	 */
 	@Override
 	public void delete() {
-		int startIndex = selection.getBeginIndex();
-		int endIndex = selection.getEndIndex();
+		setUpSelectionIndex(selection.getBeginIndex(), selection.getEndIndex());
 		if (buffer.length() > 0) {
 			if (endIndex != startIndex) {
 				buffer.delete(startIndex, endIndex);

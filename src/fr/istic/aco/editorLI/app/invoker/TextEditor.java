@@ -10,6 +10,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
+import javax.swing.event.MenuKeyEvent;
 
 import fr.istic.aco.editorLI.app.command.ICommand;
 import fr.istic.aco.editorLI.app.command.InsertTextCommand;
@@ -29,7 +30,7 @@ public class TextEditor extends JFrame implements KeyListener {
 	private JMenuItem delete = new JMenuItem("Delete");
 
 	private ICommand insertCommand;
-	private char textToInsert;
+	private char charToInsert;
 
 	public TextEditor(ICommand insertCommand) {
 		super("Text Editor");
@@ -47,7 +48,7 @@ public class TextEditor extends JFrame implements KeyListener {
 		initFrame();
 		setVisible(true);
 		this.insertCommand = insertCommand;
-		textToInsert = '\0';
+		charToInsert = '\0';
 	}
 
 	/**
@@ -83,22 +84,56 @@ public class TextEditor extends JFrame implements KeyListener {
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-		textToInsert = e.getKeyChar();
-		insertCommand.execute();
+		char character = e.getKeyChar();
+		if (isAValidChar(character)) {
+			insertChar(character);
+		}
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		// TODO Auto-generated method stub
-
+		switch (e.getKeyCode()) {
+		case KeyEvent.VK_BACK_SPACE:
+			System.out.println("Backspace");
+			break;
+		case KeyEvent.VK_DELETE:
+			System.out.println("Delete");
+			break;
+		case KeyEvent.VK_SPACE:
+			insertChar(' ');
+			break;
+		default:
+			break;
+		}
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
 	}
 
-	public char getTextToInsert() {
-		return textToInsert;
+	/**
+	 * @param character the character to insert in the buffer insert character in
+	 *                  the buffer
+	 */
+	public void insertChar(char character) {
+		charToInsert = character;
+		insertCommand.execute();
+	}
+
+	/**
+	 * @return the character to insert in the buffer
+	 */
+	public char getCharToInsert() {
+		return charToInsert;
+	}
+
+	/**
+	 * @param character the paramater we want to check if it's valid
+	 * @return if character is a valid alphanumeric character or a ponctuation
+	 */
+	public boolean isAValidChar(char character) {
+		String letter = Character.toString(character);
+		return letter.matches("^(?!\\d+$)(?:[a-zA-Z0-9][a-zA-Z0-9 @&$]*)?");
 	}
 
 }
