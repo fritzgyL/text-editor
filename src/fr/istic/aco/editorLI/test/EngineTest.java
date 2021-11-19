@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import fr.istic.aco.editorLI.app.receiver.Engine;
 import fr.istic.aco.editorLI.app.receiver.EngineImpl;
 import fr.istic.aco.editorLI.app.receiver.Selection;
-import fr.istic.aco.editorLI.app.receiver.MySelectionImpl;
+import fr.istic.aco.editorLI.app.receiver.SelectionImpl;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,7 +19,7 @@ class EngineTest {
 	@org.junit.jupiter.api.BeforeEach
 	void setUp() {
 		buffer = new StringBuilder();
-		selection = new MySelectionImpl(buffer);
+		selection = new SelectionImpl(buffer);
 		engine = new EngineImpl(buffer, selection);
 	}
 

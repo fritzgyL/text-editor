@@ -7,13 +7,13 @@ import fr.istic.aco.editorLI.app.invoker.TextEditor;
 import fr.istic.aco.editorLI.app.receiver.Engine;
 import fr.istic.aco.editorLI.app.receiver.EngineImpl;
 import fr.istic.aco.editorLI.app.receiver.Selection;
-import fr.istic.aco.editorLI.app.receiver.MySelectionImpl;
+import fr.istic.aco.editorLI.app.receiver.SelectionImpl;
 
 public class App {
 
 	public static void main(String[] args) {
 		StringBuilder buffer = new StringBuilder();
-		Selection selection = new MySelectionImpl(buffer);
+		Selection selection = new SelectionImpl(buffer);
 		Engine engine = new EngineImpl(buffer, selection);
 		BaseICommand insertCommand = new InsertCommand(engine);
 		BaseICommand deleteCommand = new DeleteCommand(engine);

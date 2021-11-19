@@ -1,12 +1,12 @@
 package fr.istic.aco.editorLI.app.receiver;
 
-public class MySelectionImpl implements Selection {
+public class SelectionImpl implements Selection {
 
 	private StringBuilder buffer;
 	private int beginIndex, endIndex;
 	private int bufferBeginIndex;
 
-	public MySelectionImpl(StringBuilder buffer) {
+	public SelectionImpl(StringBuilder buffer) {
 		this.buffer = buffer;
 		this.beginIndex = buffer.length();
 		this.endIndex = buffer.length();
