@@ -11,10 +11,9 @@ import javax.swing.JTextArea;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 
-import fr.istic.aco.editorLI.app.command.BaseICommand;
 import fr.istic.aco.editorLI.app.command.ICommand;
 
-public class TextEditor extends JFrame implements KeyListener {
+public class TextEditor extends JFrame implements KeyListener, ActionListener {
 	private static final long serialVersionUID = 1L;
 	private JMenuBar menuBar;
 	private JTextArea textArea;
@@ -22,8 +21,6 @@ public class TextEditor extends JFrame implements KeyListener {
 	private JMenu file = new JMenu("File");
 	private JMenu edit = new JMenu("Edit");
 	private JMenuItem close = new JMenuItem("Close");
-	private JMenuItem undo = new JMenuItem("Undo");
-	private JMenuItem redo = new JMenuItem("Redo");
 	private JMenuItem cut = new JMenuItem("Cut");
 	private JMenuItem copy = new JMenuItem("Copy");
 	private JMenuItem paste = new JMenuItem("Paste");
@@ -31,18 +28,25 @@ public class TextEditor extends JFrame implements KeyListener {
 
 	private ICommand insertCommand;
 	private ICommand deleteCommand;
+	private ICommand cutCommand;
+	private ICommand pasteCommand;
+	private ICommand copyCommand;
 
 	private char charToInsert;
 	private int selectionStartIndex;
 	private int selectionEndIndex;
 	private String textContent;
 
-	public TextEditor(BaseICommand insertCommand, BaseICommand deleteCommand) {
+	public TextEditor(ICommand insertCommand, ICommand deleteCommand, ICommand cutCommand, ICommand pasteCommand,
+			ICommand copyCommand) {
 		super("Text Editor");
 		this.selectionStartIndex = 0;
 		this.selectionEndIndex = 0;
 		this.insertCommand = insertCommand;
 		this.deleteCommand = deleteCommand;
+		this.cutCommand = cutCommand;
+		this.pasteCommand = pasteCommand;
+		this.copyCommand = copyCommand;
 		charToInsert = '\0';
 		textContent = "";
 		textArea = new JTextArea();
@@ -81,28 +85,42 @@ public class TextEditor extends JFrame implements KeyListener {
 	public void initMenu() {
 		menuBar = new JMenuBar();
 		file.add(close);
-		edit.add(undo);
-		edit.add(redo);
 		edit.add(cut);
 		edit.add(copy);
 		edit.add(paste);
 		edit.add(delete);
-		undo.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
 		delete.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				delete();
 			}
 		});
+		paste.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent args0) {
+				pasteAction();
+			}
+		});
+
+		copy.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent args0) {
+				copyAction();
+			}
+		});
+
+		cut.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent args0) {
+				cutAction();
+			}
+		});
+
 		close.addActionListener(new ActionListener() {
+
 			public void actionPerformed(ActionEvent arg0) {
 				System.exit(0);
 			}
+
 		});
+
 		menuBar.add(file);
 		menuBar.add(edit);
 	}
@@ -121,6 +139,15 @@ public class TextEditor extends JFrame implements KeyListener {
 		switch (e.getKeyCode()) {
 		case KeyEvent.VK_BACK_SPACE:
 			delete();
+			break;
+		case KeyEvent.VK_CUT:
+			cutAction();
+			break;
+		case KeyEvent.VK_COPY:
+			copyAction();
+			break;
+		case KeyEvent.VK_PASTE:
+			pasteAction();
 			break;
 		case KeyEvent.VK_DELETE:
 			delete();
@@ -167,16 +194,41 @@ public class TextEditor extends JFrame implements KeyListener {
 		setText(insertCommand.execute());
 	}
 
+	/**
+	 * @param text the text to insert in the textarea Replace the textarea text by
+	 *             text
+	 */
 	public void setText(String text) {
 		textContent = text;
 		textArea.setText(textContent);
 	}
 
 	/**
-	 * delete the actual selection in the buffer
+	 * delete selected text
 	 */
 	public void delete() {
 		setText(deleteCommand.execute());
+	}
+
+	/**
+	 * cut selected text
+	 */
+	public void cutAction() {
+		setText(cutCommand.execute());
+	}
+
+	/**
+	 * paste the clipboard content
+	 */
+	public void pasteAction() {
+		setText(pasteCommand.execute());
+	}
+
+	/**
+	 * copy selected text
+	 */
+	public void copyAction() {
+		setText(copyCommand.execute());
 	}
 
 	/**
@@ -198,20 +250,9 @@ public class TextEditor extends JFrame implements KeyListener {
 		selectionEndIndex = textArea.getSelectionEnd();
 	}
 
-	public void setCharToInsert(char charToInsert) {
-		this.charToInsert = charToInsert;
-	}
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
 
-	public void setSelectionStartIndex(int selectionStartIndex) {
-		this.selectionStartIndex = selectionStartIndex;
 	}
-
-	public void setSelectionEndIndex(int selectionEndIndex) {
-		this.selectionEndIndex = selectionEndIndex;
-	}
-
-	public void setTextContent(String textContent) {
-		this.textContent = textContent;
-	}
-
 }
