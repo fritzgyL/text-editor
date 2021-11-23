@@ -2,95 +2,52 @@ package fr.istic.aco.editorLI.app.receiver;
 
 public class SelectionImpl implements Selection {
 
-	private int beginIndex;
-	private int endIndex;
-	public static final int BUFFER_BEGIN_INDEX = 0;
+	private StringBuilder buffer;
+	private int beginIndex, endIndex;
+	private int bufferBeginIndex;
 
-	private StringBuffer my_buffer;
+	public SelectionImpl(StringBuilder buffer) {
+		this.buffer = buffer;
+		this.beginIndex = buffer.length();
+		this.endIndex = buffer.length();
+		this.bufferBeginIndex = 0;
+	}
 
-	/*
-	 * TODO add constructor method parse buffer in constructor(add parameter buffer)
-	 * init beginIndex and endIndex
-	 */
-
-	/**
-	 * Fournit l'indice du premier caractère désigné par la sélection.
-	 * 
-	 * @return
-	 */
 	@Override
 	public int getBeginIndex() {
-		// TODO Auto-generated method stub
 		return beginIndex;
 	}
 
-	/**
-	 * Fournit l'index du premier caractère après le dernier caractère désigné par
-	 * la sélection.
-	 * 
-	 * @return l'indice de fin
-	 */
 	@Override
 	public int getEndIndex() {
-		// TODO Auto-generated method stub
 		return endIndex;
 	}
 
-	/**
-	 * Fournit l'index du premier caractère dans le buffer
-	 *
-	 * Retourne l'indice de début du buffer.
-	 */
 	@Override
 	public int getBufferBeginIndex() {
-		// TODO Auto-generated method stub
-		return BUFFER_BEGIN_INDEX;
+		return bufferBeginIndex;
 	}
 
-	/**
-	 * Fournit l'index du premier caractère "virtuel" après la fin du buffer.
-	 *
-	 * @return the post end buffer index
-	 */
 	@Override
 	public int getBufferEndIndex() {
-		// TODO Auto-generated method stub
-		return my_buffer.toString().length();
+		return buffer.length()-1;
 	}
 
-	/**
-	 * Change la valeur de l'indice de début de la sélection
-	 *
-	 * @param beginIndex, doit être dans la plage d'index du buffer
-	 * @throws IndexOutOfBoundsException si beginIndex est hors limites.
-	 */
 	@Override
 	public void setBeginIndex(int beginIndex) {
-		// TODO Auto-generated method stub
-		if (beginIndex >= getBufferBeginIndex() & beginIndex <= getBufferEndIndex()) {
-			try {
-				this.beginIndex = beginIndex;
-			} catch (IndexOutOfBoundsException e) {
-				// TODO: handle exception
-			}
+		if (beginIndex >= getBufferBeginIndex() && beginIndex <= getBufferEndIndex()+1) {
+			this.beginIndex = beginIndex;
+		} else {
+			throw new IndexOutOfBoundsException();
 		}
 	}
 
-	/**
-	 * Change la valeur de l'index de fin de la sélection
-	 *
-	 * @param endIndex, doit être dans la plage d'index du tampon
-	 * @throws IndexOutOfBoundsException si le beginIndex est hors limites
-	 */
 	@Override
 	public void setEndIndex(int endIndex) {
-		// TODO Auto-generated method stub
-		if (beginIndex >= getBufferBeginIndex() & beginIndex <= getBufferEndIndex()) {
-			try {
-				this.endIndex = endIndex;
-			} catch (IndexOutOfBoundsException e) {
-				// TODO: handle exception
-			}
+		if (endIndex >= getBufferBeginIndex() && endIndex <= getBufferEndIndex()+1) {
+			this.endIndex = endIndex;
+		} else {
+			throw new IndexOutOfBoundsException();
 		}
 	}
 

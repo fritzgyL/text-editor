@@ -13,7 +13,6 @@ import javax.swing.event.CaretListener;
 
 import fr.istic.aco.editorLI.app.command.CutTextCommand;
 import fr.istic.aco.editorLI.app.command.ICommand;
-import fr.istic.aco.editorLI.app.command.InsertTextCommand;
 
 public class TextEditor extends JFrame implements KeyListener {
 	private static final long serialVersionUID = 1L;
@@ -30,36 +29,33 @@ public class TextEditor extends JFrame implements KeyListener {
 	private JMenuItem delete = new JMenuItem("Delete");
 
 	private ICommand insertCommand;
-	private char textToInsert;
-	
-	// k ajout
-	private char textTocut; 
+	private ICommand deleteCommand;
 	private CutTextCommand cutCommand;
-	
-	private int startsel;
-	private int endsel;
-	
 
+	private char charToInsert;
+	private int selectionStartIndex;
+	private int selectionEndIndex;
 
-	public TextEditor(ICommand insertCommand) {
+	public TextEditor(ICommand insertCommand, ICommand deleteCommand) {
 		super("Text Editor");
+		this.selectionStartIndex = 0;
+		this.selectionEndIndex = 0;
+		this.insertCommand = insertCommand;
+		this.deleteCommand = deleteCommand;
+		charToInsert = '\0';
+
 		textArea = new JTextArea();
 		scrollPane = new JScrollPane(textArea);
 		textArea.addKeyListener(this);
 		textArea.addCaretListener(new CaretListener() {
 			@Override
 			public void caretUpdate(CaretEvent e) {
-				System.out.println("start: " + textArea.getSelectionStart());
-				System.out.println("end: " + textArea.getSelectionEnd());
-				startsel = textArea.getSelectionStart();
-				endsel = textArea.getSelectionEnd();
+				updateSelection();
 			}
 		});
 		initMenu();
 		initFrame();
 		setVisible(true);
-		this.insertCommand = insertCommand;
-		textToInsert = '\0';
 	}
 
 	/**
@@ -95,45 +91,87 @@ public class TextEditor extends JFrame implements KeyListener {
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-		textToInsert = e.getKeyChar();
-		insertCommand.execute();
-		
-		// k Ajout
-		textTocut = e.getKeyChar();
-		cutCommand.execute();
-		
-		
+		char character = e.getKeyChar();
+		if (isAValidChar(character)) {
+			insert(character);
+		}
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		// TODO Auto-generated method stub
-
+		switch (e.getKeyCode()) {
+		case KeyEvent.VK_BACK_SPACE:
+			delete();
+			break;
+		case KeyEvent.VK_DELETE:
+			delete();
+			break;
+		case KeyEvent.VK_SPACE:
+			insert(' ');
+			break;
+		default:
+			break;
+		}
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
 	}
 
-	public char getTextToInsert() {
-		return textToInsert;
+	/**
+	 * @return the character to insert in the buffer
+	 */
+	public char getCharToInsert() {
+		return charToInsert;
 	}
 
-	
-	public int getStartsel() {
-		return startsel;
+	/**
+	 * @return the index of the selection start
+	 */
+	public int getSelectionStartIndex() {
+		return selectionStartIndex;
 	}
 
-	public void setStartsel(int startsel) {
-		this.startsel = startsel;
+	/**
+	 * @return the index of the selection end
+	 */
+	public int getSelectionEndIndex() {
+		return selectionEndIndex;
 	}
 
-	public int getEndsel() {
-		return endsel;
+	/**
+	 * @param character the character to insert in the buffer insert character in
+	 *                  the buffer
+	 */
+	public void insert(char character) {
+		charToInsert = character;
+		insertCommand.execute();
 	}
 
-	public void setEndsel(int endsel) {
-		this.endsel = endsel;
+	/**
+	 * delete the actual selection in the buffer
+	 */
+	public void delete() {
+		deleteCommand.execute();
 	}
-	
+
+	/**
+	 * @param character the paramater we want to check if it's valid
+	 * @return if character is a valid alphanumeric character or a ponctuation
+	 */
+	public boolean isAValidChar(char character) {
+		String patternAlphanumeric = "^[\\p{L}0-9]*$";
+		String patternSymbol = "[.;!?\\-/$\"'()@#&|\\{}=*-+=%§¤£¨µ°:]";
+		String letter = Character.toString(character);
+		return letter.matches(patternAlphanumeric) || letter.matches(patternSymbol);
+	}
+
+	/**
+	 * Automatically update selection index when user makes a selection in the GUI
+	 */
+	private void updateSelection() {
+		selectionStartIndex = textArea.getSelectionStart();
+		selectionEndIndex = textArea.getSelectionEnd();
+	}
+
 }
