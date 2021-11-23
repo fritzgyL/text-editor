@@ -9,27 +9,23 @@ import fr.istic.aco.editorLI.app.receiver.*;
  * 
  * cc qui fait une copy
  */
-public class CopyTextCommand  implements ICommand{
-	
-	private Engine engine;
-	private TextEditor editor;
+public class CopyTextCommand extends BaseICommand{
 
 	public CopyTextCommand(Engine engine) {
-		//super();
-		this.engine = engine;
-	}
-	
-	public void setEditor(TextEditor editor) {
-		this.editor = editor;
+		super(engine);
+		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public void execute() {
-		// TODO Auto-generated method stubt
-		engine.getSelection().setBeginIndex(editor.getStartsel());
-		engine.getSelection().setEndIndex(editor.getEndsel());
+		// TODO Auto-generated method stub
+		setSelection(); 
 		engine.copySelectedText();
-		//System.out.println();
+		System.out.println(engine.getBufferContents());
+		System.out.println(engine.getClipboardContents());
+		
 	}
+	
+
 
 }

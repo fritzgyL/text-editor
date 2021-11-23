@@ -2,8 +2,11 @@ package fr.istic.aco.editorLI.app.app;
 
 
 import fr.istic.aco.editorLI.app.command.BaseICommand;
+import fr.istic.aco.editorLI.app.command.CopyTextCommand;
+import fr.istic.aco.editorLI.app.command.CutTextCommand;
 import fr.istic.aco.editorLI.app.command.DeleteCommand;
 import fr.istic.aco.editorLI.app.command.InsertCommand;
+import fr.istic.aco.editorLI.app.command.PasteTextCommand;
 import fr.istic.aco.editorLI.app.invoker.TextEditor;
 import fr.istic.aco.editorLI.app.receiver.Engine;
 import fr.istic.aco.editorLI.app.receiver.EngineImpl;
@@ -18,9 +21,16 @@ public class App {
 		Engine engine = new EngineImpl(buffer, selection);
 		BaseICommand insertCommand = new InsertCommand(engine);
 		BaseICommand deleteCommand = new DeleteCommand(engine);
-		TextEditor textEditor = new TextEditor(insertCommand, deleteCommand);
+		BaseICommand cutCommand = new CutTextCommand(engine);
+		BaseICommand pasteCmmand = new PasteTextCommand(engine);
+		BaseICommand copyCommand = new CopyTextCommand(engine);
+		TextEditor textEditor = new TextEditor(insertCommand, deleteCommand, 
+		cutCommand, pasteCmmand, copyCommand);
 		insertCommand.setEditor(textEditor);
 		deleteCommand.setEditor(textEditor);
+		cutCommand.setEditor(textEditor);
+		pasteCmmand.setEditor(textEditor);
+		copyCommand.setEditor(textEditor);
 
 	}
 }

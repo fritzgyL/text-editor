@@ -1,34 +1,21 @@
 package fr.istic.aco.editorLI.app.command;
 
-import fr.istic.aco.editorLI.app.invoker.TextEditor;
 import fr.istic.aco.editorLI.app.receiver.Engine;
 
-/**
- * 
- * @author Ibouraima/Lubin
- *
- *cc to cut text
- *
- */
-public class CutTextCommand extends BaseICommand {
-	
-	public CutTextCommand(Engine engine) {
-		super(engine);
-	}
-	
-	public void setEditor(TextEditor editor) {
-		this.editor = editor;
-	}
+public class PasteTextCommand extends BaseICommand{
 
+	public PasteTextCommand(Engine engine) {
+		super(engine);
+		// TODO Auto-generated constructor stub
+	}
 
 	@Override
 	public void execute() {
 		// TODO Auto-generated method stub
 		setSelection();
-		engine.cutSelectedText();
+		engine.pasteClipboard();
 		System.out.println(engine.getBufferContents());
 		System.out.println(engine.getClipboardContents());
-
 	}
-
+	
 }

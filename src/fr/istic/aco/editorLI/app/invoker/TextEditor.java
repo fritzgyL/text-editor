@@ -11,11 +11,12 @@ import javax.swing.JTextArea;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 
-import fr.istic.aco.editorLI.app.command.CutTextCommand;
+//import fr.istic.aco.editorLI.app.command.CutTextCommand;
 import fr.istic.aco.editorLI.app.command.ICommand;
 
-public class TextEditor extends JFrame implements KeyListener {
+public class TextEditor extends JFrame implements KeyListener, ActionListener {
 	private static final long serialVersionUID = 1L;
+	protected static final String TEMPFILE = "CUTPASTE.TMP";
 	private JMenuBar menuBar;
 	private JTextArea textArea;
 	private JScrollPane scrollPane;
@@ -30,18 +31,24 @@ public class TextEditor extends JFrame implements KeyListener {
 
 	private ICommand insertCommand;
 	private ICommand deleteCommand;
-	private CutTextCommand cutCommand;
+	private ICommand cutCommand;
+	private ICommand pasteCommand;
+	private ICommand copyCommand;
 
 	private char charToInsert;
 	private int selectionStartIndex;
 	private int selectionEndIndex;
 
-	public TextEditor(ICommand insertCommand, ICommand deleteCommand) {
+	public TextEditor(ICommand insertCommand, ICommand deleteCommand, ICommand cutCommand, 
+			ICommand pasteCommand, ICommand copyCommand) {
 		super("Text Editor");
 		this.selectionStartIndex = 0;
 		this.selectionEndIndex = 0;
 		this.insertCommand = insertCommand;
 		this.deleteCommand = deleteCommand;
+		this.cutCommand = cutCommand;
+		this.pasteCommand = pasteCommand;
+		this.copyCommand = copyCommand;
 		charToInsert = '\0';
 
 		textArea = new JTextArea();
@@ -80,11 +87,33 @@ public class TextEditor extends JFrame implements KeyListener {
 		edit.add(copy);
 		edit.add(paste);
 		edit.add(delete);
+		
+		paste.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent args0) {
+				pasteAction();
+			}
+		});
+		
+		copy.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent args0) {
+				copyAction();
+			}
+		});
+
+		cut.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent args0) {
+				cutAction();
+			}
+		});
+
 		close.addActionListener(new ActionListener() {
+
 			public void actionPerformed(ActionEvent arg0) {
 				System.exit(0);
 			}
+
 		});
+
 		menuBar.add(file);
 		menuBar.add(edit);
 	}
@@ -102,6 +131,15 @@ public class TextEditor extends JFrame implements KeyListener {
 		switch (e.getKeyCode()) {
 		case KeyEvent.VK_BACK_SPACE:
 			delete();
+			break;
+		case KeyEvent.VK_CUT:
+			cutAction();
+			break;
+		case KeyEvent.VK_COPY:
+			copyAction();
+			break;
+		case KeyEvent.VK_PASTE:
+			pasteAction();
 			break;
 		case KeyEvent.VK_DELETE:
 			delete();
@@ -156,6 +194,39 @@ public class TextEditor extends JFrame implements KeyListener {
 	}
 
 	/**
+	 * cut actual selection in buffer
+	 */
+	public void cutAction() {
+		cutCommand.execute();
+	}
+	
+	/**
+	 * Paste actual selection in buffer
+	 */
+	public void pasteAction() {
+		pasteCommand.execute();
+	}
+	
+	/**
+	 * copy actual selection in buffer
+	 */
+	public void copyAction() {
+		copyCommand.execute();
+	}
+
+	/**
+	 * public void cutAddActionListener () { cut.addActionListener(new
+	 * ActionListener() { public void actionPerformed(ActionEvent args0) { try { if
+	 * (textArea.getSelectedText() != null) { BufferedWriter bw = new
+	 * BufferedWriter(new OutputStreamWriter(new FileOutputStream(TEMPFILE),
+	 * "UTF8")); bw.write(textArea.getSelectedText()); bw.close();
+	 * textArea.replaceSelection(""); } } catch (Exception e) { e.printStackTrace();
+	 * } } });
+	 * 
+	 * }
+	 */
+
+	/**
 	 * @param character the paramater we want to check if it's valid
 	 * @return if character is a valid alphanumeric character or a ponctuation
 	 */
@@ -172,6 +243,12 @@ public class TextEditor extends JFrame implements KeyListener {
 	private void updateSelection() {
 		selectionStartIndex = textArea.getSelectionStart();
 		selectionEndIndex = textArea.getSelectionEnd();
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+
 	}
 
 }
