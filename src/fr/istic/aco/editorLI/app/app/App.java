@@ -1,5 +1,7 @@
 package fr.istic.aco.editorLI.app.app;
 
+import fr.istic.aco.editorLI.app.command.CopyTextCommand;
+import fr.istic.aco.editorLI.app.command.CutTextCommand;
 import fr.istic.aco.editorLI.app.command.InsertTextCommand;
 import fr.istic.aco.editorLI.app.invoker.TextEditor;
 import fr.istic.aco.editorLI.app.receiver.Engine;
@@ -16,6 +18,14 @@ public class App {
 		Engine engine = new EngineImpl(buffer, selection);
 		InsertTextCommand insertCommand = new InsertTextCommand(engine);
 		TextEditor textEditor = new TextEditor(insertCommand);
+		System.out.println("ici1");
 		insertCommand.setEditor(textEditor);
+		
+		// k Ajout 
+		CopyTextCommand copyCommand = new CopyTextCommand(engine);
+		copyCommand.setEditor(textEditor);
+		
+		CutTextCommand cutCommand = new CutTextCommand(engine);
+		cutCommand.setEditor(textEditor);
 	}
 }

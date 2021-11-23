@@ -11,6 +11,7 @@ import javax.swing.JTextArea;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 
+import fr.istic.aco.editorLI.app.command.CutTextCommand;
 import fr.istic.aco.editorLI.app.command.ICommand;
 import fr.istic.aco.editorLI.app.command.InsertTextCommand;
 
@@ -30,6 +31,15 @@ public class TextEditor extends JFrame implements KeyListener {
 
 	private ICommand insertCommand;
 	private char textToInsert;
+	
+	// k ajout
+	private char textTocut; 
+	private CutTextCommand cutCommand;
+	
+	private int startsel;
+	private int endsel;
+	
+
 
 	public TextEditor(ICommand insertCommand) {
 		super("Text Editor");
@@ -41,6 +51,8 @@ public class TextEditor extends JFrame implements KeyListener {
 			public void caretUpdate(CaretEvent e) {
 				System.out.println("start: " + textArea.getSelectionStart());
 				System.out.println("end: " + textArea.getSelectionEnd());
+				startsel = textArea.getSelectionStart();
+				endsel = textArea.getSelectionEnd();
 			}
 		});
 		initMenu();
@@ -85,6 +97,12 @@ public class TextEditor extends JFrame implements KeyListener {
 	public void keyTyped(KeyEvent e) {
 		textToInsert = e.getKeyChar();
 		insertCommand.execute();
+		
+		// k Ajout
+		textTocut = e.getKeyChar();
+		cutCommand.execute();
+		
+		
 	}
 
 	@Override
@@ -101,4 +119,21 @@ public class TextEditor extends JFrame implements KeyListener {
 		return textToInsert;
 	}
 
+	
+	public int getStartsel() {
+		return startsel;
+	}
+
+	public void setStartsel(int startsel) {
+		this.startsel = startsel;
+	}
+
+	public int getEndsel() {
+		return endsel;
+	}
+
+	public void setEndsel(int endsel) {
+		this.endsel = endsel;
+	}
+	
 }
