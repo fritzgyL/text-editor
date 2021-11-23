@@ -26,8 +26,12 @@ public abstract class BaseICommand implements ICommand {
 		engine.getSelection().setBeginIndex(editor.getSelectionStartIndex());
 		engine.getSelection().setEndIndex(editor.getSelectionEndIndex());
 	}
+	
+	public String getText() {
+		return engine.getBufferContents();
+	}
 
 	@Override
-	public abstract void execute();
+	public abstract String execute();
 
 }

@@ -3,6 +3,7 @@ package fr.istic.aco.editorLI.app.app;
 import fr.istic.aco.editorLI.app.command.BaseICommand;
 import fr.istic.aco.editorLI.app.command.DeleteCommand;
 import fr.istic.aco.editorLI.app.command.InsertCommand;
+import fr.istic.aco.editorLI.app.command.ReplayCommand;
 import fr.istic.aco.editorLI.app.invoker.TextEditor;
 import fr.istic.aco.editorLI.app.receiver.Engine;
 import fr.istic.aco.editorLI.app.receiver.EngineImpl;
@@ -17,9 +18,10 @@ public class App {
 		Engine engine = new EngineImpl(buffer, selection);
 		BaseICommand insertCommand = new InsertCommand(engine);
 		BaseICommand deleteCommand = new DeleteCommand(engine);
-		TextEditor textEditor = new TextEditor(insertCommand, deleteCommand);
+		BaseICommand undoCommand = new ReplayCommand(engine);
+		TextEditor textEditor = new TextEditor(insertCommand, deleteCommand, undoCommand);
 		insertCommand.setEditor(textEditor);
 		deleteCommand.setEditor(textEditor);
-
+		undoCommand.setEditor(textEditor);
 	}
 }

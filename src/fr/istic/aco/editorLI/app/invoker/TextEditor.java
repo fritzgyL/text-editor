@@ -11,6 +11,7 @@ import javax.swing.JTextArea;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 
+import fr.istic.aco.editorLI.app.command.BaseICommand;
 import fr.istic.aco.editorLI.app.command.ICommand;
 
 public class TextEditor extends JFrame implements KeyListener {
@@ -21,7 +22,8 @@ public class TextEditor extends JFrame implements KeyListener {
 	private JMenu file = new JMenu("File");
 	private JMenu edit = new JMenu("Edit");
 	private JMenuItem close = new JMenuItem("Close");
-	private JMenuItem cancel = new JMenuItem("Cancel");
+	private JMenuItem undo = new JMenuItem("Undo");
+	private JMenuItem redo = new JMenuItem("Redo");
 	private JMenuItem cut = new JMenuItem("Cut");
 	private JMenuItem copy = new JMenuItem("Copy");
 	private JMenuItem paste = new JMenuItem("Paste");
@@ -33,16 +35,18 @@ public class TextEditor extends JFrame implements KeyListener {
 	private char charToInsert;
 	private int selectionStartIndex;
 	private int selectionEndIndex;
+	private String textContent;
 
-	public TextEditor(ICommand insertCommand, ICommand deleteCommand) {
+	public TextEditor(BaseICommand insertCommand, BaseICommand deleteCommand) {
 		super("Text Editor");
 		this.selectionStartIndex = 0;
 		this.selectionEndIndex = 0;
 		this.insertCommand = insertCommand;
 		this.deleteCommand = deleteCommand;
 		charToInsert = '\0';
-
+		textContent = "";
 		textArea = new JTextArea();
+		textArea.setEditable(false);
 		scrollPane = new JScrollPane(textArea);
 		textArea.addKeyListener(this);
 		textArea.addCaretListener(new CaretListener() {
@@ -54,6 +58,10 @@ public class TextEditor extends JFrame implements KeyListener {
 		initMenu();
 		initFrame();
 		setVisible(true);
+	}
+
+	public enum CommandType {
+		INSERT, COPY, CUT, PASTE, DELETE
 	}
 
 	/**
@@ -73,11 +81,23 @@ public class TextEditor extends JFrame implements KeyListener {
 	public void initMenu() {
 		menuBar = new JMenuBar();
 		file.add(close);
-		edit.add(cancel);
+		edit.add(undo);
+		edit.add(redo);
 		edit.add(cut);
 		edit.add(copy);
 		edit.add(paste);
 		edit.add(delete);
+		undo.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		delete.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				delete();
+			}
+		});
 		close.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				System.exit(0);
@@ -91,7 +111,8 @@ public class TextEditor extends JFrame implements KeyListener {
 	public void keyTyped(KeyEvent e) {
 		char character = e.getKeyChar();
 		if (isAValidChar(character)) {
-			insert(character);
+			charToInsert = character;
+			insert();
 		}
 	}
 
@@ -105,7 +126,8 @@ public class TextEditor extends JFrame implements KeyListener {
 			delete();
 			break;
 		case KeyEvent.VK_SPACE:
-			insert(' ');
+			charToInsert = ' ';
+			insert();
 			break;
 		default:
 			break;
@@ -141,16 +163,20 @@ public class TextEditor extends JFrame implements KeyListener {
 	 * @param character the character to insert in the buffer insert character in
 	 *                  the buffer
 	 */
-	public void insert(char character) {
-		charToInsert = character;
-		insertCommand.execute();
+	public void insert() {
+		setText(insertCommand.execute());
+	}
+
+	public void setText(String text) {
+		textContent = text;
+		textArea.setText(textContent);
 	}
 
 	/**
 	 * delete the actual selection in the buffer
 	 */
 	public void delete() {
-		deleteCommand.execute();
+		setText(deleteCommand.execute());
 	}
 
 	/**
@@ -170,6 +196,22 @@ public class TextEditor extends JFrame implements KeyListener {
 	private void updateSelection() {
 		selectionStartIndex = textArea.getSelectionStart();
 		selectionEndIndex = textArea.getSelectionEnd();
+	}
+
+	public void setCharToInsert(char charToInsert) {
+		this.charToInsert = charToInsert;
+	}
+
+	public void setSelectionStartIndex(int selectionStartIndex) {
+		this.selectionStartIndex = selectionStartIndex;
+	}
+
+	public void setSelectionEndIndex(int selectionEndIndex) {
+		this.selectionEndIndex = selectionEndIndex;
+	}
+
+	public void setTextContent(String textContent) {
+		this.textContent = textContent;
 	}
 
 }

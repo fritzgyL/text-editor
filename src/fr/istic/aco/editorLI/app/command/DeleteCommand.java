@@ -9,10 +9,10 @@ public class DeleteCommand extends BaseICommand implements ICommand {
 	}
 
 	@Override
-	public void execute() {
+	public String execute() {
 		setSelection();
 		engine.delete();
-		System.out.println(engine.getBufferContents());
+		return engine.getBufferContents();
 	}
 
 }

@@ -4,7 +4,8 @@ public interface ICommand {
 
 	/**
 	 * execute the command
+	 * @return 
 	 */
-	void execute();
+	String execute();
 
 }
