@@ -86,10 +86,11 @@ public class EngineImpl implements Engine {
 	@Override
 	public void pasteClipboard() {
 		setUpSelectionIndex(selection.getBeginIndex(), selection.getEndIndex());
+		System.out.println(startIndex + " " + endIndex);
 		if (!clipboard.isEmpty()) {
 			buffer.replace(startIndex, endIndex, clipboard);
-			selection.setBeginIndex(startIndex + 1);
-			selection.setEndIndex(startIndex + 1);
+			selection.setBeginIndex(startIndex + clipboard.length());
+			selection.setEndIndex(startIndex + clipboard.length());
 		}
 	}
 
@@ -102,13 +103,8 @@ public class EngineImpl implements Engine {
 	public void insert(String s) {
 		setUpSelectionIndex(selection.getBeginIndex(), selection.getEndIndex());
 		buffer.replace(startIndex, endIndex, s);
-		if (endIndex != startIndex) {
-			selection.setEndIndex(startIndex);
-		} else {
-			selection.setBeginIndex(buffer.length());
-			selection.setEndIndex(buffer.length());
-		}
-
+		selection.setBeginIndex(startIndex + 1);
+		selection.setEndIndex(startIndex + 1);
 	}
 
 	/**

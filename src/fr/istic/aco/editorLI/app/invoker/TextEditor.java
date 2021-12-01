@@ -12,6 +12,7 @@ import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 
 import fr.istic.aco.editorLI.app.command.ICommand;
+import fr.istic.aco.editorLI.app.receiver.Text;
 
 public class TextEditor extends JFrame implements KeyListener, ActionListener {
 	private static final long serialVersionUID = 1L;
@@ -25,20 +26,21 @@ public class TextEditor extends JFrame implements KeyListener, ActionListener {
 	private JMenuItem copy = new JMenuItem("Copy");
 	private JMenuItem paste = new JMenuItem("Paste");
 	private JMenuItem delete = new JMenuItem("Delete");
+	private JMenuItem replay = new JMenuItem("Replay");
 
 	private ICommand insertCommand;
 	private ICommand deleteCommand;
 	private ICommand cutCommand;
 	private ICommand pasteCommand;
 	private ICommand copyCommand;
+	private ICommand replayCommand;
 
 	private char charToInsert;
 	private int selectionStartIndex;
 	private int selectionEndIndex;
-	private String textContent;
 
 	public TextEditor(ICommand insertCommand, ICommand deleteCommand, ICommand cutCommand, ICommand pasteCommand,
-			ICommand copyCommand) {
+			ICommand copyCommand, ICommand replayCommand) {
 		super("Text Editor");
 		this.selectionStartIndex = 0;
 		this.selectionEndIndex = 0;
@@ -47,10 +49,14 @@ public class TextEditor extends JFrame implements KeyListener, ActionListener {
 		this.cutCommand = cutCommand;
 		this.pasteCommand = pasteCommand;
 		this.copyCommand = copyCommand;
+		this.replayCommand = replayCommand;
 		charToInsert = '\0';
-		textContent = "";
 		textArea = new JTextArea();
+		resetCaretVisibility();
+
 		textArea.setEditable(false);
+
+		// textArea.setEditable(false);
 		scrollPane = new JScrollPane(textArea);
 		textArea.addKeyListener(this);
 		textArea.addCaretListener(new CaretListener() {
@@ -89,27 +95,52 @@ public class TextEditor extends JFrame implements KeyListener, ActionListener {
 		edit.add(copy);
 		edit.add(paste);
 		edit.add(delete);
+		edit.add(replay);
 		delete.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				delete();
+				try {
+					delete();
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+				resetCaretVisibility();
+
 			}
 		});
 		paste.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent args0) {
-				pasteAction();
+				try {
+					paste();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				resetCaretVisibility();
+
 			}
 		});
 
 		copy.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent args0) {
-				copyAction();
+				try {
+					copy();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				resetCaretVisibility();
+
 			}
 		});
 
 		cut.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent args0) {
-				cutAction();
+				try {
+					cut();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				resetCaretVisibility();
+
 			}
 		});
 
@@ -117,6 +148,20 @@ public class TextEditor extends JFrame implements KeyListener, ActionListener {
 
 			public void actionPerformed(ActionEvent arg0) {
 				System.exit(0);
+			}
+
+		});
+
+		replay.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					replay();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				resetCaretVisibility();
+
 			}
 
 		});
@@ -130,7 +175,11 @@ public class TextEditor extends JFrame implements KeyListener, ActionListener {
 		char character = e.getKeyChar();
 		if (isAValidChar(character)) {
 			charToInsert = character;
-			insert();
+			try {
+				insert();
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
 		}
 	}
 
@@ -138,23 +187,26 @@ public class TextEditor extends JFrame implements KeyListener, ActionListener {
 	public void keyPressed(KeyEvent e) {
 		switch (e.getKeyCode()) {
 		case KeyEvent.VK_BACK_SPACE:
-			delete();
-			break;
-		case KeyEvent.VK_CUT:
-			cutAction();
-			break;
-		case KeyEvent.VK_COPY:
-			copyAction();
-			break;
-		case KeyEvent.VK_PASTE:
-			pasteAction();
+			try {
+				delete();
+			} catch (Exception e3) {
+				e3.printStackTrace();
+			}
 			break;
 		case KeyEvent.VK_DELETE:
-			delete();
+			try {
+				delete();
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
 			break;
 		case KeyEvent.VK_SPACE:
 			charToInsert = ' ';
-			insert();
+			try {
+				insert();
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
 			break;
 		default:
 			break;
@@ -189,9 +241,13 @@ public class TextEditor extends JFrame implements KeyListener, ActionListener {
 	/**
 	 * @param character the character to insert in the buffer insert character in
 	 *                  the buffer
+	 * @throws Exception
 	 */
-	public void insert() {
-		setText(insertCommand.execute());
+	public void insert() throws Exception {
+		Text text = insertCommand.execute();
+		int[] caret = text.getCaret();
+		setText(text.getContent());
+		setCaretPosition(caret[0], caret[1]);
 	}
 
 	/**
@@ -199,36 +255,67 @@ public class TextEditor extends JFrame implements KeyListener, ActionListener {
 	 *             text
 	 */
 	public void setText(String text) {
-		textContent = text;
-		textArea.setText(textContent);
+		textArea.setText(text);
 	}
 
 	/**
 	 * delete selected text
+	 * 
+	 * @throws Exception
 	 */
-	public void delete() {
-		setText(deleteCommand.execute());
+	public void delete() throws Exception {
+		Text text = deleteCommand.execute();
+		int[] caret = text.getCaret();
+		setText(text.getContent());
+		setCaretPosition(caret[0], caret[1]);
 	}
 
 	/**
 	 * cut selected text
+	 * 
+	 * @throws Exception
 	 */
-	public void cutAction() {
-		setText(cutCommand.execute());
+	public void cut() throws Exception {
+		Text text = cutCommand.execute();
+		int[] caret = text.getCaret();
+		setText(text.getContent());
+		setCaretPosition(caret[0], caret[1]);
 	}
 
 	/**
 	 * paste the clipboard content
+	 * 
+	 * @throws Exception
 	 */
-	public void pasteAction() {
-		setText(pasteCommand.execute());
+	public void paste() throws Exception {
+		Text text = pasteCommand.execute();
+		int[] caret = text.getCaret();
+		setText(text.getContent());
+		setCaretPosition(caret[0], caret[1]);
 	}
 
 	/**
 	 * copy selected text
+	 * 
+	 * @throws Exception
 	 */
-	public void copyAction() {
-		setText(copyCommand.execute());
+	public void copy() throws Exception {
+		Text text = copyCommand.execute();
+		int[] caret = text.getCaret();
+		setText(text.getContent());
+		setCaretPosition(caret[0], caret[1]);
+	}
+
+	/**
+	 * replay last action
+	 * 
+	 * @throws Exception
+	 */
+	public void replay() throws Exception {
+		Text text = replayCommand.execute();
+		int[] caret = text.getCaret();
+		setText(text.getContent());
+		setCaretPosition(caret[0], caret[1]);
 	}
 
 	/**
@@ -254,5 +341,15 @@ public class TextEditor extends JFrame implements KeyListener, ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 
+	}
+
+	public void setCaretPosition(int beginIndex, int endIndex) {
+		textArea.setCaretPosition(beginIndex);
+		textArea.moveCaretPosition(endIndex);
+	}
+
+	public void resetCaretVisibility() {
+		textArea.getCaret().setVisible(true);
+		textArea.getCaret().setSelectionVisible(true);
 	}
 }

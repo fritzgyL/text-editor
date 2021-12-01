@@ -54,12 +54,12 @@ class EngineTest {
 	@Test
 	void getBufferContents() {
 		assertEquals("", engine.getBufferContents());
-		engine.insert("hey");
-		assertEquals("hey", engine.getBufferContents());
-		engine.insert("hey");
-		assertEquals("heyhey", engine.getBufferContents());
+		engine.insert("h");
+		assertEquals("h", engine.getBufferContents());
+		engine.insert("e");
+		assertEquals("he", engine.getBufferContents());
 		engine.delete();
-		assertEquals("heyhe", engine.getBufferContents());
+		assertEquals("h", engine.getBufferContents());
 	}
 
 	@Test
@@ -69,11 +69,7 @@ class EngineTest {
 		engine.getSelection().setEndIndex(3);
 		engine.delete();
 		assertEquals("", engine.getBufferContents());
-		engine.insert("hey");
-		System.out.println(engine.getSelection().getBeginIndex());
-		engine.delete();
-		assertEquals("he", engine.getBufferContents());
-		engine.delete();
+		engine.insert("h");
 		engine.delete();
 		assertEquals("", engine.getBufferContents());
 		engine.delete();

@@ -2,14 +2,18 @@ package fr.istic.aco.editorLI.app.command;
 
 import fr.istic.aco.editorLI.app.invoker.TextEditor;
 import fr.istic.aco.editorLI.app.receiver.Engine;
+import fr.istic.aco.editorLI.app.receiver.Recorder;
+import fr.istic.aco.editorLI.app.receiver.Text;
 
 public abstract class BaseICommand implements ICommand {
 	protected Engine engine;
 	protected TextEditor editor;
+	protected Recorder recorder;
 
-	public BaseICommand(Engine engine) {
+	public BaseICommand(Engine engine, Recorder recorder) {
 		this.engine = engine;
 		this.editor = null;
+		this.recorder = recorder;
 	}
 
 	/**
@@ -26,12 +30,12 @@ public abstract class BaseICommand implements ICommand {
 		engine.getSelection().setBeginIndex(editor.getSelectionStartIndex());
 		engine.getSelection().setEndIndex(editor.getSelectionEndIndex());
 	}
-	
+
 	public String getText() {
 		return engine.getBufferContents();
 	}
 
 	@Override
-	public abstract String execute();
+	public abstract Text execute() throws Exception;
 
 }

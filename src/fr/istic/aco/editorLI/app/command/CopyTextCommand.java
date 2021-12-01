@@ -10,15 +10,18 @@ import fr.istic.aco.editorLI.app.receiver.*;
  */
 public class CopyTextCommand extends BaseICommand {
 
-	public CopyTextCommand(Engine engine) {
-		super(engine);
+	public CopyTextCommand(Engine engine, Recorder recorder) {
+		super(engine, recorder);
 	}
 
 	@Override
-	public String execute() {
+	public Text execute() {
 		setSelection();
 		engine.copySelectedText();
-		return engine.getBufferContents();
+		// save command into the recorder
+		recorder.save(this);
+		return new Text(engine.getBufferContents(),
+				new int[] { engine.getSelection().getBeginIndex(), engine.getSelection().getEndIndex() });
 	}
 
 }
