@@ -3,10 +3,11 @@ package fr.istic.aco.editorLI.app.command;
 import fr.istic.aco.editorLI.app.receiver.*;
 
 /**
+ * Concrete command for copy
  * 
- * @author LI
+ * @author Ibouraima/Lubin
  * 
- *         cc qui fait une copy
+ * 
  */
 public class CopyTextCommand extends BaseICommand {
 

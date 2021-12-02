@@ -4,6 +4,13 @@ import fr.istic.aco.editorLI.app.receiver.Engine;
 import fr.istic.aco.editorLI.app.receiver.Recorder;
 import fr.istic.aco.editorLI.app.receiver.Text;
 
+/**
+ * Concrete command for command replaying
+ * 
+ * @author Fritzgy Lubin
+ * 
+ *
+ */
 public class ReplayCommand extends BaseICommand {
 
 	public ReplayCommand(Engine engine, Recorder recorder) {

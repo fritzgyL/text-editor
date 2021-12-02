@@ -15,6 +15,11 @@ import fr.istic.aco.editorLI.app.receiver.RecorderImpl;
 import fr.istic.aco.editorLI.app.receiver.Selection;
 import fr.istic.aco.editorLI.app.receiver.SelectionImpl;
 
+/**
+ * @author Fritzgy Lubin
+ * Main application entry point
+ *
+ */
 public class App {
 
 	public static void main(String[] args) {

@@ -6,10 +6,10 @@ import fr.istic.aco.editorLI.app.receiver.Recorder;
 import fr.istic.aco.editorLI.app.receiver.Text;
 
 /**
+ * Concrete command to cut text
  * 
  * @author Ibouraima/Lubin
- *
- *         cc to cut text
+ 
  *
  */
 public class CutTextCommand extends BaseICommand {
@@ -26,7 +26,7 @@ public class CutTextCommand extends BaseICommand {
 	public Text execute() {
 		setSelection();
 		engine.cutSelectedText();
-		//save command into the recorder
+		// save command into the recorder
 		recorder.save(this);
 		return new Text(engine.getBufferContents(),
 				new int[] { engine.getSelection().getBeginIndex(), engine.getSelection().getEndIndex() });

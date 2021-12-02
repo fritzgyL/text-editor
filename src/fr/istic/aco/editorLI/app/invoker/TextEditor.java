@@ -14,8 +14,16 @@ import javax.swing.event.CaretListener;
 import fr.istic.aco.editorLI.app.command.ICommand;
 import fr.istic.aco.editorLI.app.receiver.Text;
 
+/**
+ * Text editor GUI/Invoker
+ * 
+ * @author Ibouraima/Lubin
+ *
+ */
 public class TextEditor extends JFrame implements KeyListener, ActionListener {
 	private static final long serialVersionUID = 1L;
+	public static long lastKeyPressTime = 0l;
+
 	private JMenuBar menuBar;
 	private JTextArea textArea;
 	private JScrollPane scrollPane;
@@ -38,6 +46,7 @@ public class TextEditor extends JFrame implements KeyListener, ActionListener {
 	private char charToInsert;
 	private int selectionStartIndex;
 	private int selectionEndIndex;
+	private String text;
 
 	public TextEditor(ICommand insertCommand, ICommand deleteCommand, ICommand cutCommand, ICommand pasteCommand,
 			ICommand copyCommand, ICommand replayCommand) {

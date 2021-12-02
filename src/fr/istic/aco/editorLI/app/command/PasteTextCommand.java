@@ -4,6 +4,12 @@ import fr.istic.aco.editorLI.app.receiver.Engine;
 import fr.istic.aco.editorLI.app.receiver.Recorder;
 import fr.istic.aco.editorLI.app.receiver.Text;
 
+/**
+ * Concrete command for pasting the clipboard content
+ * 
+ * @author Ibouraima/Lubin
+ *
+ */
 public class PasteTextCommand extends BaseICommand {
 
 	public PasteTextCommand(Engine engine, Recorder recorder) {

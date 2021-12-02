@@ -14,6 +14,11 @@ public class EngineImpl implements Engine {
 		this.clipboard = "";
 	}
 
+	/**
+	 * @param start the start index of the selection
+	 * @param end the end index of the selection
+	 * update buffer selection start and end index
+	 */
 	public void setUpSelectionIndex(int start, int end) {
 		startIndex = start;
 		endIndex = end;
@@ -46,7 +51,6 @@ public class EngineImpl implements Engine {
 	 */
 	@Override
 	public String getClipboardContents() {
-		// TODO
 		return this.clipboard;
 	}
 

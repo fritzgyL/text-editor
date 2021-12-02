@@ -2,6 +2,11 @@ package fr.istic.aco.editorLI.app.receiver;
 
 import fr.istic.aco.editorLI.app.command.ICommand;
 
+/**
+ * @author Fritzgy Lubin
+ * Manage saving and replay user actions
+ *
+ */
 public interface Recorder {
 
 	/**
