@@ -28,7 +28,9 @@ public class InsertCommand extends BaseICommand {
 	}
 
 	/**
-	 * @param state the memento object consumes state to restore the previous state.
+	 * consumes state to restore the previous state.
+	 * 
+	 * @param state the memento object
 	 */
 	public void restore(State state) {
 		text = state.getText();

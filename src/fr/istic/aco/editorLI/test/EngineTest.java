@@ -23,10 +23,6 @@ class EngineTest {
 		engine = new EngineImpl(buffer, selection);
 	}
 
-//    private void todo() {
-//        fail("Unimplemented test");
-//    }
-
 	@DisplayName("Buffer must be empty after initialisation")
 	@Test
 	void getSelection() {
@@ -74,7 +70,6 @@ class EngineTest {
 		assertEquals("", engine.getBufferContents());
 		engine.delete();
 		assertEquals("", engine.getBufferContents());
-
 	}
 
 	@Test
@@ -104,7 +99,6 @@ class EngineTest {
 		engine.cutSelectedText();
 		assertEquals("ey", engine.getClipboardContents());
 		assertEquals("", engine.getBufferContents());
-
 	}
 
 	@Test
