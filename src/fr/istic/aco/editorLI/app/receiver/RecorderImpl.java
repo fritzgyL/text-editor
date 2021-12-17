@@ -5,6 +5,7 @@ import java.util.Stack;
 import fr.istic.aco.editorLI.app.command.ICommand;
 import fr.istic.aco.editorLI.app.command.InsertCommand;
 import fr.istic.aco.editorLI.app.memento.State;
+import fr.istic.aco.editorLI.app.utils.Text;
 
 /**
  * Receiver in command pattern and Caretaker in memento pattern
@@ -49,6 +50,12 @@ public class RecorderImpl implements Recorder {
 			}
 			return command.execute();
 		}
+	}
+
+	@Override
+	public Text undo() throws Exception {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

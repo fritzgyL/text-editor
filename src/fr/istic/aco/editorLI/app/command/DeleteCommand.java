@@ -1,8 +1,11 @@
 package fr.istic.aco.editorLI.app.command;
 
+import java.util.Stack;
+
+import fr.istic.aco.editorLI.app.memento.EngineState;
 import fr.istic.aco.editorLI.app.receiver.Engine;
 import fr.istic.aco.editorLI.app.receiver.Recorder;
-import fr.istic.aco.editorLI.app.receiver.Text;
+import fr.istic.aco.editorLI.app.utils.Text;
 
 /**
  * Concrete command for deleting text
@@ -10,18 +13,20 @@ import fr.istic.aco.editorLI.app.receiver.Text;
  * @author Fritzgy Lubin
  *
  */
-public class DeleteCommand extends BaseICommand implements ICommand {
+public class DeleteCommand extends BaseCommand implements ICommand {
 
-	public DeleteCommand(Engine engine, Recorder recorder) {
-		super(engine, recorder);
+	public DeleteCommand(Engine engine, Recorder recorder, Stack<EngineState> engineStates) {
+		super(engine, recorder, engineStates);
 	}
 
 	@Override
 	public Text execute() {
+		resetCounter();
 		setSelection();
 		engine.delete();
 		// save command into the recorder
 		recorder.save(this);
+		saveEngineState();
 		return new Text(engine.getBufferContents(),
 				new int[] { engine.getSelection().getBeginIndex(), engine.getSelection().getEndIndex() });
 	}

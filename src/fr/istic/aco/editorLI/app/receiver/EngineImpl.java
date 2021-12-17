@@ -1,5 +1,9 @@
 package fr.istic.aco.editorLI.app.receiver;
 
+import fr.istic.aco.editorLI.app.memento.EngineState;
+import fr.istic.aco.editorLI.app.memento.State;
+import fr.istic.aco.editorLI.app.utils.Text;
+
 public class EngineImpl implements Engine {
 
 	private StringBuilder buffer;
@@ -16,8 +20,8 @@ public class EngineImpl implements Engine {
 
 	/**
 	 * @param start the start index of the selection
-	 * @param end the end index of the selection
-	 * update buffer selection start and end index
+	 * @param end   the end index of the selection update buffer selection start and
+	 *              end index
 	 */
 	public void setUpSelectionIndex(int start, int end) {
 		startIndex = start;
@@ -90,7 +94,6 @@ public class EngineImpl implements Engine {
 	@Override
 	public void pasteClipboard() {
 		setUpSelectionIndex(selection.getBeginIndex(), selection.getEndIndex());
-		System.out.println(startIndex + " " + endIndex);
 		if (!clipboard.isEmpty()) {
 			buffer.replace(startIndex, endIndex, clipboard);
 			selection.setBeginIndex(startIndex + clipboard.length());
@@ -128,6 +131,19 @@ public class EngineImpl implements Engine {
 			}
 		}
 
+	}
+
+	public EngineState save() {
+		return new EngineState(buffer.toString(), selection.getBeginIndex(), selection.getEndIndex());
+	}
+
+	public void restore(EngineState state) {
+		Text text = state.getText();
+		buffer.replace(0, buffer.length(),text.getContent());
+		//buffer = new StringBuilder(text.getContent());
+		System.out.println(buffer.toString());
+		selection.setBeginIndex(text.getCaret()[0]);
+		selection.setEndIndex(text.getCaret()[1]);
 	}
 
 }

@@ -1,4 +1,4 @@
-package fr.istic.aco.editorLI.app.receiver;
+package fr.istic.aco.editorLI.app.utils;
 
 /**
  * Data structure to store buffer current content

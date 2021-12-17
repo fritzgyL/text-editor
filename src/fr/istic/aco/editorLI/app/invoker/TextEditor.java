@@ -1,6 +1,7 @@
 package fr.istic.aco.editorLI.app.invoker;
 
 import java.awt.event.*;
+import java.util.Stack;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -12,7 +13,7 @@ import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 
 import fr.istic.aco.editorLI.app.command.ICommand;
-import fr.istic.aco.editorLI.app.receiver.Text;
+import fr.istic.aco.editorLI.app.utils.Text;
 
 /**
  * Text editor GUI/Invoker
@@ -34,7 +35,8 @@ public class TextEditor extends JFrame implements KeyListener, ActionListener {
 	private JMenuItem copy = new JMenuItem("Copy");
 	private JMenuItem paste = new JMenuItem("Paste");
 	private JMenuItem delete = new JMenuItem("Delete");
-	private JMenuItem replay = new JMenuItem("Replay");
+	private JMenuItem redo = new JMenuItem("Replay");
+	private JMenuItem undo = new JMenuItem("Undo");
 
 	private ICommand insertCommand;
 	private ICommand deleteCommand;
@@ -47,6 +49,10 @@ public class TextEditor extends JFrame implements KeyListener, ActionListener {
 	private int selectionStartIndex;
 	private int selectionEndIndex;
 	private String text;
+	
+	private Stack<ICommand> undoStack;
+	private Stack<ICommand> redoStack;
+
 
 	public TextEditor(ICommand insertCommand, ICommand deleteCommand, ICommand cutCommand, ICommand pasteCommand,
 			ICommand copyCommand, ICommand replayCommand) {
@@ -77,6 +83,10 @@ public class TextEditor extends JFrame implements KeyListener, ActionListener {
 		initMenu();
 		initFrame();
 		setVisible(true);
+		
+		undoStack = new Stack<ICommand>();
+		redoStack = new Stack<ICommand>();
+
 	}
 
 	public enum CommandType {
@@ -104,7 +114,8 @@ public class TextEditor extends JFrame implements KeyListener, ActionListener {
 		edit.add(copy);
 		edit.add(paste);
 		edit.add(delete);
-		edit.add(replay);
+		edit.add(redo);
+		edit.add(undo);
 		delete.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -161,11 +172,25 @@ public class TextEditor extends JFrame implements KeyListener, ActionListener {
 
 		});
 
-		replay.addActionListener(new ActionListener() {
+		redo.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					replay();
+					redo();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				resetCaretVisibility();
+
+			}
+
+		});
+		
+		undo.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					undo();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -257,6 +282,8 @@ public class TextEditor extends JFrame implements KeyListener, ActionListener {
 		int[] caret = text.getCaret();
 		setText(text.getContent());
 		setCaretPosition(caret[0], caret[1]);
+		redoStack.clear();
+		undoStack.push(insertCommand);
 	}
 
 	/**
@@ -277,6 +304,8 @@ public class TextEditor extends JFrame implements KeyListener, ActionListener {
 		int[] caret = text.getCaret();
 		setText(text.getContent());
 		setCaretPosition(caret[0], caret[1]);
+		redoStack.clear();
+		undoStack.push(deleteCommand);
 	}
 
 	/**
@@ -289,6 +318,8 @@ public class TextEditor extends JFrame implements KeyListener, ActionListener {
 		int[] caret = text.getCaret();
 		setText(text.getContent());
 		setCaretPosition(caret[0], caret[1]);
+		redoStack.clear();
+		undoStack.push(cutCommand);
 	}
 
 	/**
@@ -301,6 +332,8 @@ public class TextEditor extends JFrame implements KeyListener, ActionListener {
 		int[] caret = text.getCaret();
 		setText(text.getContent());
 		setCaretPosition(caret[0], caret[1]);
+		redoStack.clear();
+		undoStack.push(pasteCommand);
 	}
 
 	/**
@@ -360,5 +393,34 @@ public class TextEditor extends JFrame implements KeyListener, ActionListener {
 	public void resetCaretVisibility() {
 		textArea.getCaret().setVisible(true);
 		textArea.getCaret().setSelectionVisible(true);
+	}
+	
+	public void undo() {
+		if(!undoStack.isEmpty()) {
+		    ICommand undoCommand = undoStack.pop();
+		    try {
+				Text text = undoCommand.undo();
+				int[] caret = text.getCaret();
+				setText(text.getContent());
+				setCaretPosition(caret[0], caret[1]);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			redoStack.push(undoCommand); }
+	}
+	
+	public void redo() {
+		if(!redoStack.isEmpty()) {
+		    ICommand redoCommand = redoStack.pop();
+		    try {
+				Text text = redoCommand.execute();
+				int[] caret = text.getCaret();
+				setText(text.getContent());
+				setCaretPosition(caret[0], caret[1]);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		    undoStack.push(redoCommand);
+		}
 	}
 }
