@@ -1,4 +1,4 @@
-package fr.istic.aco.editorLI.app.app;
+package fr.istic.aco.editorLI.app;
 
 import java.util.Stack;
 
