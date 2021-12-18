@@ -2,7 +2,7 @@ package fr.istic.aco.editorLI.app.command;
 
 import java.util.Stack;
 
-import fr.istic.aco.editorLI.app.memento.EngineState;
+import fr.istic.aco.editorLI.app.memento.EngineMemento;
 import fr.istic.aco.editorLI.app.receiver.*;
 import fr.istic.aco.editorLI.app.utils.Text;
 
@@ -15,7 +15,7 @@ import fr.istic.aco.editorLI.app.utils.Text;
  */
 public class CopyTextCommand extends BaseCommand {
 
-	public CopyTextCommand(Engine engine, Recorder recorder, Stack<EngineState> engineStates) {
+	public CopyTextCommand(Engine engine, Recorder recorder, Stack<EngineMemento> engineStates) {
 		super(engine, recorder, engineStates);
 	}
 
@@ -23,9 +23,7 @@ public class CopyTextCommand extends BaseCommand {
 	public Text execute() {
 		setSelection();
 		engine.copySelectedText();
-		// save command into the recorder
 		recorder.save(this);
-		// saveEngineState();
 		return new Text(engine.getBufferContents(),
 				new int[] { engine.getSelection().getBeginIndex(), engine.getSelection().getEndIndex() });
 	}

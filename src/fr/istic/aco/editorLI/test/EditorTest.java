@@ -3,11 +3,11 @@ package fr.istic.aco.editorLI.test;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+
 import java.util.Stack;
 
+import fr.istic.aco.editorLI.app.GUI.TextEditor;
 import fr.istic.aco.editorLI.app.command.BaseCommand;
 import fr.istic.aco.editorLI.app.command.CopyTextCommand;
 import fr.istic.aco.editorLI.app.command.CutTextCommand;
@@ -15,8 +15,9 @@ import fr.istic.aco.editorLI.app.command.DeleteCommand;
 import fr.istic.aco.editorLI.app.command.InsertCommand;
 import fr.istic.aco.editorLI.app.command.PasteTextCommand;
 import fr.istic.aco.editorLI.app.command.ReplayCommand;
-import fr.istic.aco.editorLI.app.invoker.TextEditor;
-import fr.istic.aco.editorLI.app.memento.EngineState;
+import fr.istic.aco.editorLI.app.invoker.Invoker;
+import fr.istic.aco.editorLI.app.invoker.InvokerImpl;
+import fr.istic.aco.editorLI.app.memento.EngineMemento;
 import fr.istic.aco.editorLI.app.receiver.Engine;
 import fr.istic.aco.editorLI.app.receiver.EngineImpl;
 import fr.istic.aco.editorLI.app.receiver.Recorder;
@@ -35,18 +36,21 @@ public class EditorTest {
 		selection = new SelectionImpl(buffer);
 		engine = new EngineImpl(buffer, selection);
 		Recorder recorder = new RecorderImpl();
-		Stack<EngineState> engineStates = new Stack<EngineState>();
+		Stack<EngineMemento> engineStates = new Stack<EngineMemento>();
 		BaseCommand insertCommand = new InsertCommand(engine, recorder, engineStates);
 		BaseCommand deleteCommand = new DeleteCommand(engine, recorder, engineStates);
 		BaseCommand cutCommand = new CutTextCommand(engine, recorder, engineStates);
-		BaseCommand pasteCmmand = new PasteTextCommand(engine, recorder, engineStates);
+		BaseCommand pasteCommand = new PasteTextCommand(engine, recorder, engineStates);
 		BaseCommand copyCommand = new CopyTextCommand(engine, recorder, engineStates);
 		BaseCommand replayCommand = new ReplayCommand(engine, recorder, engineStates);
-		textEditor = new TextEditor(insertCommand, deleteCommand, cutCommand, pasteCmmand, copyCommand, replayCommand);
+		Invoker invoker = new InvokerImpl();
+		textEditor = new TextEditor.TextEditorBuilder(insertCommand, deleteCommand, cutCommand, copyCommand,
+				pasteCommand, replayCommand, invoker).build();
+		((InvokerImpl) invoker).setEditor(textEditor);
 		insertCommand.setEditor(textEditor);
 		deleteCommand.setEditor(textEditor);
 		cutCommand.setEditor(textEditor);
-		pasteCmmand.setEditor(textEditor);
+		pasteCommand.setEditor(textEditor);
 		copyCommand.setEditor(textEditor);
 		replayCommand.setEditor(textEditor);
 	}
@@ -309,6 +313,12 @@ public class EditorTest {
 	}
 
 	@Test
+	public void testLastUndo() throws Exception {
+		textEditor.undo();
+		assertEquals("", textEditor.getText());
+	}
+
+	@Test
 	public void testRedoAfterUndo() throws Exception {
 		textEditor.setCharToInsert('a');
 		textEditor.insert();
@@ -329,6 +339,33 @@ public class EditorTest {
 		textEditor.undo();
 		textEditor.redo();
 		assertEquals("aa", textEditor.getText());
+	}
+
+	@Test
+	public void testReplayForInsertion() throws Exception {
+		textEditor.setCharToInsert('a');
+		textEditor.insert();
+		textEditor.replay();
+		assertEquals("aa", textEditor.getText());
+	}
+
+	@Test
+	public void testReplayForCuting() throws Exception {
+		textEditor.setCharToInsert('a');
+		textEditor.insert();
+		textEditor.setCaretPosition(0, 1);
+		textEditor.cut();
+		textEditor.paste();
+		textEditor.setCaretPosition(0, 1);
+		textEditor.replay();
+		assertEquals("a", engine.getClipboardContents());
+		assertEquals("a", textEditor.getText());
+	}
+
+	@Test
+	public void testReplayIfEmptyCommand() throws Exception {
+		Throwable exception = assertThrows(Exception.class, () -> textEditor.replay());
+		assertEquals("no commands saved", exception.getMessage());
 	}
 
 }

@@ -21,10 +21,5 @@ public interface Recorder {
 	 */
 	public Text replay() throws Exception;
 	
-	/**
-	 * @return the buffer content after last command has been replayed
-	 * @throws Exception if no commands have been saved
-	 */
-	public Text undo() throws Exception;
 
 }

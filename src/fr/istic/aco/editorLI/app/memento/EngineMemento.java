@@ -2,12 +2,12 @@ package fr.istic.aco.editorLI.app.memento;
 
 import fr.istic.aco.editorLI.app.utils.Text;
 
-public class EngineState implements Memento {
+public class EngineMemento implements Memento {
 
 	private final String content;
 	private final int charetStartPosition, charetEndPosition;
 
-	public EngineState(String content, int charetStartPosition, int charetEndPosition) {
+	public EngineMemento(String content, int charetStartPosition, int charetEndPosition) {
 		this.content = content;
 		this.charetStartPosition = charetStartPosition;
 		this.charetEndPosition = charetEndPosition;

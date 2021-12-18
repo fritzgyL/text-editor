@@ -2,8 +2,8 @@ package fr.istic.aco.editorLI.app.command;
 
 import java.util.Stack;
 
-import fr.istic.aco.editorLI.app.invoker.TextEditor;
-import fr.istic.aco.editorLI.app.memento.EngineState;
+import fr.istic.aco.editorLI.app.GUI.TextEditor;
+import fr.istic.aco.editorLI.app.memento.EngineMemento;
 import fr.istic.aco.editorLI.app.receiver.Engine;
 import fr.istic.aco.editorLI.app.receiver.EngineImpl;
 import fr.istic.aco.editorLI.app.receiver.Recorder;
@@ -19,15 +19,13 @@ public abstract class BaseCommand implements ICommand {
 	protected Engine engine;
 	protected TextEditor editor;
 	protected Recorder recorder;
-	protected Stack<EngineState> engineStates;
-	protected int counter;
+	protected Stack<EngineMemento> engineStates;
 
-	public BaseCommand(Engine engine, Recorder recorder, Stack<EngineState> engineStates) {
+	public BaseCommand(Engine engine, Recorder recorder, Stack<EngineMemento> engineStates) {
 		this.engine = engine;
 		this.editor = null;
 		this.recorder = recorder;
 		this.engineStates = engineStates;
-		counter = 0;
 	}
 
 	/**
@@ -45,8 +43,11 @@ public abstract class BaseCommand implements ICommand {
 		engine.getSelection().setEndIndex(editor.getSelectionEndIndex());
 	}
 
+	/**
+	 * save engine state before modifying buffer content
+	 */
 	public void saveEngineState() {
-		EngineState es = (((EngineImpl) engine).save());
+		EngineMemento es = (((EngineImpl) engine).save());
 		engineStates.push(es);
 	}
 
@@ -55,19 +56,15 @@ public abstract class BaseCommand implements ICommand {
 
 	@Override
 	public Text undo() {
-		EngineState es;
+		EngineMemento es;
 		if (!engineStates.isEmpty()) {
 			es = engineStates.pop();
 		} else {
-			es = new EngineState("", 0, 0);
+			es = new EngineMemento("", 0, 0);
 		}
 		((EngineImpl) engine).restore(es);
 		return new Text(engine.getBufferContents(),
 				new int[] { engine.getSelection().getBeginIndex(), engine.getSelection().getEndIndex() });
-	}
-
-	public void resetCounter() {
-		counter = 0;
 	}
 
 }

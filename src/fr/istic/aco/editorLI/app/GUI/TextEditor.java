@@ -1,4 +1,4 @@
-package fr.istic.aco.editorLI.app.invoker;
+package fr.istic.aco.editorLI.app.GUI;
 
 import java.awt.event.*;
 import java.util.Stack;
@@ -13,9 +13,9 @@ import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 
 import fr.istic.aco.editorLI.app.command.ICommand;
-import fr.istic.aco.editorLI.app.command.InsertCommand;
-import fr.istic.aco.editorLI.app.memento.State;
-import fr.istic.aco.editorLI.app.utils.Text;
+import fr.istic.aco.editorLI.app.invoker.Invoker;
+import fr.istic.aco.editorLI.app.memento.InsertMemento;
+import fr.istic.aco.editorLI.app.utils.Utilities;
 
 /**
  * Text editor GUI/Invoker
@@ -37,7 +37,8 @@ public class TextEditor extends JFrame implements KeyListener, ActionListener {
 	private JMenuItem copy = new JMenuItem("Copy");
 	private JMenuItem paste = new JMenuItem("Paste");
 	private JMenuItem delete = new JMenuItem("Delete");
-	private JMenuItem redo = new JMenuItem("Replay");
+	private JMenuItem replay = new JMenuItem("Replay");
+	private JMenuItem redo = new JMenuItem("Redo");
 	private JMenuItem undo = new JMenuItem("Undo");
 
 	private ICommand insertCommand;
@@ -54,41 +55,27 @@ public class TextEditor extends JFrame implements KeyListener, ActionListener {
 	private Stack<ICommand> undoStack;
 	private Stack<ICommand> redoStack;
 
-	private State insertCommandState;
+	private InsertMemento insertCommandState;
 
-	public TextEditor(ICommand insertCommand, ICommand deleteCommand, ICommand cutCommand, ICommand pasteCommand,
-			ICommand copyCommand, ICommand replayCommand) {
+	private Invoker invoker;
+
+	public TextEditor(TextEditorBuilder textEditorBuilder) {
 		super("Text Editor");
 		this.selectionStartIndex = 0;
 		this.selectionEndIndex = 0;
-		this.insertCommand = insertCommand;
-		this.deleteCommand = deleteCommand;
-		this.cutCommand = cutCommand;
-		this.pasteCommand = pasteCommand;
-		this.copyCommand = copyCommand;
-		this.replayCommand = replayCommand;
 		charToInsert = '\0';
-		textArea = new JTextArea();
-		resetCaretVisibility();
-
-		textArea.setEditable(false);
-
-		// textArea.setEditable(false);
-		scrollPane = new JScrollPane(textArea);
-		textArea.addKeyListener(this);
-		textArea.addCaretListener(new CaretListener() {
-			@Override
-			public void caretUpdate(CaretEvent e) {
-				updateSelection();
-			}
-		});
 		initMenu();
 		initFrame();
-		setVisible(true);
-
+		resetCaretVisibility();
+		insertCommand = textEditorBuilder.insertCommand;
+		deleteCommand = textEditorBuilder.deleteCommand;
+		copyCommand = textEditorBuilder.copyCommand;
+		cutCommand = textEditorBuilder.cutCommand;
+		pasteCommand = textEditorBuilder.pasteCommand;
+		replayCommand = textEditorBuilder.replayCommand;
+		invoker = textEditorBuilder.invoker;
 		undoStack = new Stack<ICommand>();
 		redoStack = new Stack<ICommand>();
-
 	}
 
 	public enum CommandType {
@@ -99,11 +86,23 @@ public class TextEditor extends JFrame implements KeyListener, ActionListener {
 	 * Initialize the user interface
 	 */
 	public void initFrame() {
+		textArea = new JTextArea();
+		textArea.setEditable(false);
+		scrollPane = new JScrollPane(textArea);
+		textArea.addKeyListener(this);
+		textArea.addCaretListener(new CaretListener() {
+			@Override
+			public void caretUpdate(CaretEvent e) {
+				updateSelection();
+			}
+		});
 		setSize(1000, 500);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 		setJMenuBar(menuBar);
 		add(scrollPane);
+		setVisible(true);
+		setAlwaysOnTop(true);
 	}
 
 	/**
@@ -116,6 +115,7 @@ public class TextEditor extends JFrame implements KeyListener, ActionListener {
 		edit.add(copy);
 		edit.add(paste);
 		edit.add(delete);
+		edit.add(replay);
 		edit.add(redo);
 		edit.add(undo);
 		delete.addActionListener(new ActionListener() {
@@ -141,7 +141,6 @@ public class TextEditor extends JFrame implements KeyListener, ActionListener {
 
 			}
 		});
-
 		copy.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent args0) {
 				try {
@@ -152,8 +151,8 @@ public class TextEditor extends JFrame implements KeyListener, ActionListener {
 				resetCaretVisibility();
 
 			}
-		});
 
+		});
 		cut.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent args0) {
 				try {
@@ -165,17 +164,25 @@ public class TextEditor extends JFrame implements KeyListener, ActionListener {
 
 			}
 		});
-
 		close.addActionListener(new ActionListener() {
-
 			public void actionPerformed(ActionEvent arg0) {
 				System.exit(0);
 			}
 
 		});
+		replay.addActionListener(new ActionListener() {
 
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					replay();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				resetCaretVisibility();
+			}
+
+		});
 		redo.addActionListener(new ActionListener() {
-
 			public void actionPerformed(ActionEvent arg0) {
 				try {
 					redo();
@@ -187,7 +194,6 @@ public class TextEditor extends JFrame implements KeyListener, ActionListener {
 			}
 
 		});
-
 		undo.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent arg0) {
@@ -197,11 +203,9 @@ public class TextEditor extends JFrame implements KeyListener, ActionListener {
 					e.printStackTrace();
 				}
 				resetCaretVisibility();
-
 			}
 
 		});
-
 		menuBar.add(file);
 		menuBar.add(edit);
 	}
@@ -209,7 +213,7 @@ public class TextEditor extends JFrame implements KeyListener, ActionListener {
 	@Override
 	public void keyTyped(KeyEvent e) {
 		char character = e.getKeyChar();
-		if (isAValidChar(character)) {
+		if (Utilities.isAValidChar(character)) {
 			charToInsert = character;
 			try {
 				insert();
@@ -249,6 +253,30 @@ public class TextEditor extends JFrame implements KeyListener, ActionListener {
 		}
 	}
 
+	public void insert() throws Exception {
+		invoker.insert(insertCommand);
+	}
+
+	public void delete() throws Exception {
+		invoker.delete(deleteCommand);
+	}
+
+	public void replay() throws Exception {
+		invoker.replay(replayCommand);
+	}
+
+	public void cut() throws Exception {
+		invoker.cut(cutCommand);
+	}
+
+	public void copy() throws Exception {
+		invoker.copy(copyCommand);
+	}
+
+	public void paste() throws Exception {
+		invoker.paste(pasteCommand);
+	}
+
 	@Override
 	public void keyReleased(KeyEvent e) {
 	}
@@ -275,111 +303,18 @@ public class TextEditor extends JFrame implements KeyListener, ActionListener {
 	}
 
 	/**
-	 * @param character the character to insert in the buffer insert character in
-	 *                  the buffer
-	 * @throws Exception
-	 */
-	public void insert() throws Exception {
-		((InsertCommand) insertCommand).setText(Character.toString(getCharToInsert()));
-		Text text = insertCommand.execute();
-		insertCommandState = ((InsertCommand) insertCommand).save();
-		int[] caret = text.getCaret();
-		setText(text.getContent());
-		setCaretPosition(caret[0], caret[1]);
-		redoStack.clear();
-		undoStack.push(insertCommand);
-		updateSelection();
-	}
-
-	/**
-	 * @param text the text to insert in the textarea Replace the textarea text by
-	 *             text
+	 * Replace the textarea text by text
+	 * 
+	 * @param text the text to insert in the textarea
 	 */
 	public void setText(String text) {
 		textArea.setText(text);
 	}
 
 	/**
-	 * delete selected text
-	 * 
-	 * @throws Exception
-	 */
-	public void delete() throws Exception {
-		Text text = deleteCommand.execute();
-		int[] caret = text.getCaret();
-		setText(text.getContent());
-		setCaretPosition(caret[0], caret[1]);
-		redoStack.clear();
-		undoStack.push(deleteCommand);
-	}
-
-	/**
-	 * cut selected text
-	 * 
-	 * @throws Exception
-	 */
-	public void cut() throws Exception {
-		Text text = cutCommand.execute();
-		int[] caret = text.getCaret();
-		setText(text.getContent());
-		setCaretPosition(caret[0], caret[1]);
-		redoStack.clear();
-		undoStack.push(cutCommand);
-	}
-
-	/**
-	 * paste the clipboard content
-	 * 
-	 * @throws Exception
-	 */
-	public void paste() throws Exception {
-		Text text = pasteCommand.execute();
-		int[] caret = text.getCaret();
-		setText(text.getContent());
-		setCaretPosition(caret[0], caret[1]);
-		redoStack.clear();
-		undoStack.push(pasteCommand);
-	}
-
-	/**
-	 * copy selected text
-	 * 
-	 * @throws Exception
-	 */
-	public void copy() throws Exception {
-		Text text = copyCommand.execute();
-		int[] caret = text.getCaret();
-		setText(text.getContent());
-		setCaretPosition(caret[0], caret[1]);
-	}
-
-	/**
-	 * replay last action
-	 * 
-	 * @throws Exception
-	 */
-	public void replay() throws Exception {
-		Text text = replayCommand.execute();
-		int[] caret = text.getCaret();
-		setText(text.getContent());
-		setCaretPosition(caret[0], caret[1]);
-	}
-
-	/**
-	 * @param character the paramater we want to check if it's valid
-	 * @return if character is a valid alphanumeric character or a ponctuation
-	 */
-	public boolean isAValidChar(char character) {
-		String patternAlphanumeric = "^[\\p{L}0-9]*$";
-		String patternSymbol = "[.;!?\\-/$\"'()@#&|\\{}=*-+=%§¤£¨µ°:]";
-		String letter = Character.toString(character);
-		return letter.matches(patternAlphanumeric) || letter.matches(patternSymbol);
-	}
-
-	/**
 	 * Automatically update selection index when user makes a selection in the GUI
 	 */
-	private void updateSelection() {
+	public void updateSelection() {
 		selectionStartIndex = textArea.getSelectionStart();
 		selectionEndIndex = textArea.getSelectionEnd();
 	}
@@ -389,12 +324,21 @@ public class TextEditor extends JFrame implements KeyListener, ActionListener {
 		// TODO Auto-generated method stub
 	}
 
+	/**
+	 * Set the caret position to begin and end index
+	 * 
+	 * @param beginIndex the start position of the caret
+	 * @param endIndex   the end position of the caret
+	 */
 	public void setCaretPosition(int beginIndex, int endIndex) {
 		textArea.setCaretPosition(beginIndex);
 		textArea.moveCaretPosition(endIndex);
 		updateSelection();
 	}
 
+	/**
+	 * make caret visible if focus has been lost
+	 */
 	public void resetCaretVisibility() {
 		textArea.getCaret().setVisible(true);
 		textArea.getCaret().setSelectionVisible(true);
@@ -403,42 +347,97 @@ public class TextEditor extends JFrame implements KeyListener, ActionListener {
 	public void undo() {
 		if (!undoStack.isEmpty()) {
 			ICommand undoCommand = undoStack.pop();
-			try {
-				Text text = undoCommand.undo();
-				int[] caret = text.getCaret();
-				setText(text.getContent());
-				setCaretPosition(caret[0], caret[1]);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			redoStack.push(undoCommand);
+			invoker.undo(undoCommand);
 		}
 	}
 
 	public void redo() {
 		if (!redoStack.isEmpty()) {
 			ICommand redoCommand = redoStack.pop();
-			try {
-				if (redoCommand instanceof InsertCommand) {
-					((InsertCommand) redoCommand).restore(insertCommandState);
-				}
-				Text text = redoCommand.execute();
-				int[] caret = text.getCaret();
-				setText(text.getContent());
-				setCaretPosition(caret[0], caret[1]);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			undoStack.push(redoCommand);
+			invoker.redo(redoCommand);
 		}
 	}
 
+	/**
+	 * update the character to insert in the editor
+	 * 
+	 * @param mChar a char to insert in the editor
+	 */
 	public void setCharToInsert(char mChar) {
 		charToInsert = mChar;
 	}
 
+	/**
+	 * @return the current text content of the editor
+	 */
 	public String getText() {
 		return textArea.getText();
+	}
+
+	/**
+	 * update insert command state
+	 * 
+	 * @param save the insert memento
+	 */
+	public void setInsertCommandState(InsertMemento save) {
+		this.insertCommandState = save;
+	}
+
+	/**
+	 * Clear the redo commands stack
+	 */
+	public void clearRedoStack() {
+		redoStack.clear();
+	}
+
+	/**
+	 * Add command to the undo stack
+	 * 
+	 * @param command a concrete command
+	 */
+	public void addNewUndoCommand(ICommand command) {
+		undoStack.push(command);
+	}
+
+	/**
+	 * Add command to the redo stack
+	 * 
+	 * @param command a concrete command
+	 */
+	public void addNewRedoCommand(ICommand command) {
+		redoStack.push(command);
+	}
+
+	/**
+	 * @return insert command memento
+	 */
+	public InsertMemento getInsertCommandState() {
+		return insertCommandState;
+	}
+
+	public static class TextEditorBuilder {
+		private ICommand insertCommand;
+		private ICommand deleteCommand;
+		private ICommand cutCommand;
+		private ICommand copyCommand;
+		private ICommand pasteCommand;
+		private ICommand replayCommand;
+		private Invoker invoker;
+
+		public TextEditorBuilder(ICommand insertCommand, ICommand deleteCommand, ICommand cutCommand,
+				ICommand copyCommand, ICommand pasteCommand, ICommand replayCommand, Invoker invoker) {
+			this.insertCommand = insertCommand;
+			this.deleteCommand = deleteCommand;
+			this.cutCommand = cutCommand;
+			this.copyCommand = copyCommand;
+			this.pasteCommand = pasteCommand;
+			this.replayCommand = replayCommand;
+			this.invoker = invoker;
+		}
+
+		public TextEditor build() {
+			return new TextEditor(this);
+		}
 	}
 
 }

@@ -4,7 +4,7 @@ import java.util.Stack;
 
 import fr.istic.aco.editorLI.app.command.ICommand;
 import fr.istic.aco.editorLI.app.command.InsertCommand;
-import fr.istic.aco.editorLI.app.memento.State;
+import fr.istic.aco.editorLI.app.memento.InsertMemento;
 import fr.istic.aco.editorLI.app.utils.Text;
 
 /**
@@ -14,8 +14,8 @@ import fr.istic.aco.editorLI.app.utils.Text;
  *
  */
 public class RecorderImpl implements Recorder {
-	// Store the memento of insert
-	private State insertCommandState;
+	// Store only the memento of insert
+	private InsertMemento insertCommandState;
 	// stack data structure for storing commands
 	private Stack<ICommand> commands;
 
@@ -43,19 +43,11 @@ public class RecorderImpl implements Recorder {
 			ICommand command = commands.pop();
 			if (command instanceof InsertCommand) {
 				if (insertCommandState != null) {
-					// ((InsertCommand) command).restore(insertCommandState);
-				} else {
-					throw new Exception("state is null");
+					((InsertCommand) command).restore(insertCommandState);
 				}
 			}
 			return command.execute();
 		}
-	}
-
-	@Override
-	public Text undo() throws Exception {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

@@ -5,16 +5,14 @@ package fr.istic.aco.editorLI.app.memento;
  * 
  * @author Fritzgy Lubin
  */
-public class State {
+public class InsertMemento {
 
 	private final String text;
 
-	public State(String text) {
+	public InsertMemento(String text) {
 		this.text = text;
 	}
-	
-	
-    
+
 	public String getText() {
 		return text;
 	}

@@ -2,10 +2,9 @@ package fr.istic.aco.editorLI.app.command;
 
 import java.util.Stack;
 
-import fr.istic.aco.editorLI.app.memento.EngineState;
-import fr.istic.aco.editorLI.app.memento.State;
+import fr.istic.aco.editorLI.app.memento.EngineMemento;
+import fr.istic.aco.editorLI.app.memento.InsertMemento;
 import fr.istic.aco.editorLI.app.receiver.Engine;
-import fr.istic.aco.editorLI.app.receiver.EngineImpl;
 import fr.istic.aco.editorLI.app.receiver.Recorder;
 import fr.istic.aco.editorLI.app.utils.Text;
 
@@ -20,31 +19,35 @@ public class InsertCommand extends BaseCommand {
 
 	private String text;
 
-	public InsertCommand(Engine engine, Recorder recorder, Stack<EngineState> engineStates) {
+	public InsertCommand(Engine engine, Recorder recorder, Stack<EngineMemento> engineStates) {
 		super(engine, recorder, engineStates);
 	}
 
 	/**
 	 * @return the newly created memento object
 	 */
-	public State save() {
-		return new State(text);
+	public InsertMemento save() {
+		return new InsertMemento(text);
 	}
 
 	/**
 	 * @param state the memento object consumes state to restore the previous state.
 	 */
-	public void restore(State state) {
+	public void restore(InsertMemento state) {
 		text = state.getText();
 	}
 
+	/**
+	 * set the text to insert
+	 * 
+	 * @param text the text to insert
+	 */
 	public void setText(String text) {
 		this.text = text;
 	}
 
 	@Override
 	public Text execute() {
-		resetCounter();
 		setSelection();
 		saveEngineState();
 		engine.insert(text);

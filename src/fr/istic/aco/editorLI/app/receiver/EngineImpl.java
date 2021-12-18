@@ -1,7 +1,7 @@
 package fr.istic.aco.editorLI.app.receiver;
 
-import fr.istic.aco.editorLI.app.memento.EngineState;
-import fr.istic.aco.editorLI.app.memento.State;
+import fr.istic.aco.editorLI.app.memento.EngineMemento;
+import fr.istic.aco.editorLI.app.memento.InsertMemento;
 import fr.istic.aco.editorLI.app.utils.Text;
 
 public class EngineImpl implements Engine {
@@ -133,11 +133,11 @@ public class EngineImpl implements Engine {
 
 	}
 
-	public EngineState save() {
-		return new EngineState(buffer.toString(), selection.getBeginIndex(), selection.getEndIndex());
+	public EngineMemento save() {
+		return new EngineMemento(buffer.toString(), selection.getBeginIndex(), selection.getEndIndex());
 	}
 
-	public void restore(EngineState state) {
+	public void restore(EngineMemento state) {
 		Text text = state.getText();
 		buffer.replace(0, buffer.length(), text.getContent());
 		// buffer = new StringBuilder(text.getContent());
