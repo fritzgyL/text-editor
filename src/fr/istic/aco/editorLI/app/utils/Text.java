@@ -1,7 +1,7 @@
 package fr.istic.aco.editorLI.app.utils;
 
 /**
- * Data structure to store buffer current content
+ * Data structure for storing buffer current content
  * 
  * @author Fritzgy Lubin
  *

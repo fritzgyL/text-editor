@@ -253,26 +253,56 @@ public class TextEditor extends JFrame implements KeyListener, ActionListener {
 		}
 	}
 
+	/**
+	 * Insert text
+	 * 
+	 * @throws Exception
+	 */
 	public void insert() throws Exception {
 		invoker.insert(insertCommand);
 	}
 
+	/**
+	 * delete selected text
+	 * 
+	 * @throws Exception
+	 */
 	public void delete() throws Exception {
 		invoker.delete(deleteCommand);
 	}
 
+	/**
+	 * replay user action
+	 * 
+	 * @throws Exception
+	 */
 	public void replay() throws Exception {
 		invoker.replay(replayCommand);
 	}
 
+	/**
+	 * cut selected text
+	 * 
+	 * @throws Exception
+	 */
 	public void cut() throws Exception {
 		invoker.cut(cutCommand);
 	}
 
+	/**
+	 * copy selected text
+	 * 
+	 * @throws Exception
+	 */
 	public void copy() throws Exception {
 		invoker.copy(copyCommand);
 	}
 
+	/**
+	 * paste clipboard content
+	 * 
+	 * @throws Exception
+	 */
 	public void paste() throws Exception {
 		invoker.paste(pasteCommand);
 	}
@@ -344,6 +374,9 @@ public class TextEditor extends JFrame implements KeyListener, ActionListener {
 		textArea.getCaret().setSelectionVisible(true);
 	}
 
+	/**
+	 * undo user action
+	 */
 	public void undo() {
 		if (!undoStack.isEmpty()) {
 			ICommand undoCommand = undoStack.pop();
@@ -351,6 +384,9 @@ public class TextEditor extends JFrame implements KeyListener, ActionListener {
 		}
 	}
 
+	/**
+	 * redo user action
+	 */
 	public void redo() {
 		if (!redoStack.isEmpty()) {
 			ICommand redoCommand = redoStack.pop();
@@ -415,6 +451,12 @@ public class TextEditor extends JFrame implements KeyListener, ActionListener {
 		return insertCommandState;
 	}
 
+	/**
+	 * Builder for TextEditor
+	 * 
+	 * @author Fritzgy Lubin
+	 *
+	 */
 	public static class TextEditorBuilder {
 		private ICommand insertCommand;
 		private ICommand deleteCommand;

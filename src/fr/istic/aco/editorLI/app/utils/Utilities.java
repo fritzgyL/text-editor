@@ -1,5 +1,11 @@
 package fr.istic.aco.editorLI.app.utils;
 
+/**
+ * Class containing useful functions
+ * 
+ * @author Fritzgy Lubin
+ *
+ */
 public class Utilities {
 	/**
 	 * @param character the parameter we want to check if it's valid
