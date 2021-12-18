@@ -38,16 +38,17 @@ public class InsertCommand extends BaseCommand {
 		text = state.getText();
 	}
 
+	public void setText(String text) {
+		this.text = text;
+	}
+
 	@Override
 	public Text execute() {
 		resetCounter();
 		setSelection();
-		text = Character.toString(editor.getCharToInsert());
+		saveEngineState();
 		engine.insert(text);
 		recorder.save(this);
-		saveEngineState();
-		System.out.println(engineStates.size());
-
 		return new Text(engine.getBufferContents(),
 				new int[] { engine.getSelection().getBeginIndex(), engine.getSelection().getEndIndex() });
 	}

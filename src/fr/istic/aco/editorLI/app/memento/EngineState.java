@@ -19,9 +19,5 @@ public class EngineState implements Memento {
 		return new Text(content, new int[] { charetStartPosition, charetEndPosition });
 	}
 
-	@Override
-	public String toString() {
-		return content + " [" + this.charetStartPosition + " " + this.charetEndPosition + "]";
-	}
 
 }

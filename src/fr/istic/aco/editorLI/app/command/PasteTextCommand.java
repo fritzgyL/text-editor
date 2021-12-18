@@ -23,10 +23,10 @@ public class PasteTextCommand extends BaseCommand {
 	public Text execute() {
 		resetCounter();
 		setSelection();
+		saveEngineState();
 		engine.pasteClipboard();
 		// save command into the recorder
 		recorder.save(this);
-		saveEngineState();
 		return new Text(engine.getBufferContents(),
 				new int[] { engine.getSelection().getBeginIndex(), engine.getSelection().getEndIndex() });
 	}

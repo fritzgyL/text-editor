@@ -139,9 +139,8 @@ public class EngineImpl implements Engine {
 
 	public void restore(EngineState state) {
 		Text text = state.getText();
-		buffer.replace(0, buffer.length(),text.getContent());
-		//buffer = new StringBuilder(text.getContent());
-		System.out.println(buffer.toString());
+		buffer.replace(0, buffer.length(), text.getContent());
+		// buffer = new StringBuilder(text.getContent());
 		selection.setBeginIndex(text.getCaret()[0]);
 		selection.setEndIndex(text.getCaret()[1]);
 	}

@@ -33,7 +33,6 @@ public class CutTextCommand extends BaseCommand {
 		// save command into the recorder
 		recorder.save(this);
 		saveEngineState();
-		System.out.println(engineStates.size());
 		return new Text(engine.getBufferContents(),
 				new int[] { engine.getSelection().getBeginIndex(), engine.getSelection().getEndIndex() });
 

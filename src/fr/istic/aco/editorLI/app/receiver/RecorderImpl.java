@@ -43,7 +43,7 @@ public class RecorderImpl implements Recorder {
 			ICommand command = commands.pop();
 			if (command instanceof InsertCommand) {
 				if (insertCommandState != null) {
-					((InsertCommand) command).restore(insertCommandState);
+					// ((InsertCommand) command).restore(insertCommandState);
 				} else {
 					throw new Exception("state is null");
 				}

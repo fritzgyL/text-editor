@@ -45,13 +45,6 @@ public abstract class BaseCommand implements ICommand {
 		engine.getSelection().setEndIndex(editor.getSelectionEndIndex());
 	}
 
-	/**
-	 * @return buffer content
-	 */
-	public String getText() {
-		return engine.getBufferContents();
-	}
-
 	public void saveEngineState() {
 		EngineState es = (((EngineImpl) engine).save());
 		engineStates.push(es);
@@ -62,10 +55,6 @@ public abstract class BaseCommand implements ICommand {
 
 	@Override
 	public Text undo() {
-		if (counter == 0) {
-			engineStates.pop();
-		}
-		counter++;
 		EngineState es;
 		if (!engineStates.isEmpty()) {
 			es = engineStates.pop();
