@@ -10,7 +10,8 @@ import fr.istic.aco.editorLI.app.utils.Text;
 /**
  * Concrete command for pasting the clipboard content
  * 
- * @author Ibouraima/Lubin
+ * @author Fritzgy Lubin
+ * @author Abdou Ibouraima
  *
  */
 public class PasteTextCommand extends BaseCommand {

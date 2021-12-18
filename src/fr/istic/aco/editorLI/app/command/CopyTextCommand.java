@@ -9,7 +9,8 @@ import fr.istic.aco.editorLI.app.utils.Text;
 /**
  * Concrete command for copy
  * 
- * @author Ibouraima/Lubin
+ * @author Fritzgy Lubin
+ * @author Abdou Ibouraima
  * 
  * 
  */

@@ -10,6 +10,11 @@ import fr.istic.aco.editorLI.app.receiver.SelectionImpl;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Test class for the engine
+ * @author Fritzgy Lubin
+ *
+ */
 class EngineTest {
 
 	private Engine engine;

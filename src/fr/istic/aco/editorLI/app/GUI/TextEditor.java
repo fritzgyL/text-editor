@@ -20,7 +20,8 @@ import fr.istic.aco.editorLI.app.utils.Utilities;
 /**
  * Text editor GUI/Invoker
  * 
- * @author Ibouraima/Lubin
+ * @author Fritzgy Lubin
+ * @author Abdou Ibouraima
  *
  */
 public class TextEditor extends JFrame implements KeyListener, ActionListener {

@@ -10,7 +10,8 @@ import fr.istic.aco.editorLI.app.utils.Text;
 /**
  * Concrete command to cut text
  * 
- * @author Ibouraima/Lubin
+ * @author Fritzgy Lubin
+ * @author Abdou Ibouraima
  *
  * 
  */

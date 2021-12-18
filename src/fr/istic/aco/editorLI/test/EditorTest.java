@@ -25,6 +25,12 @@ import fr.istic.aco.editorLI.app.receiver.RecorderImpl;
 import fr.istic.aco.editorLI.app.receiver.Selection;
 import fr.istic.aco.editorLI.app.receiver.SelectionImpl;
 
+/**
+ * Test class for integration testing
+ * 
+ * @author Fritzgy Lubin
+ *
+ */
 public class EditorTest {
 	Selection selection;
 	Engine engine;
