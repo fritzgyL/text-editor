@@ -49,7 +49,7 @@ public class TextEditor extends JFrame implements KeyListener, ActionListener {
 	private ICommand copyCommand;
 	private ICommand replayCommand;
 
-	private char charToInsert;
+	private String charToInsert;
 	private int selectionStartIndex;
 	private int selectionEndIndex;
 
@@ -64,7 +64,7 @@ public class TextEditor extends JFrame implements KeyListener, ActionListener {
 		super("Text Editor");
 		this.selectionStartIndex = 0;
 		this.selectionEndIndex = 0;
-		charToInsert = '\0';
+		charToInsert = "";
 		initMenu();
 		initFrame();
 		resetCaretVisibility();
@@ -213,7 +213,7 @@ public class TextEditor extends JFrame implements KeyListener, ActionListener {
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-		char character = e.getKeyChar();
+		String character = Character.toString(e.getKeyChar());
 		if (Utilities.isAValidChar(character)) {
 			charToInsert = character;
 			try {
@@ -242,7 +242,15 @@ public class TextEditor extends JFrame implements KeyListener, ActionListener {
 			}
 			break;
 		case KeyEvent.VK_SPACE:
-			charToInsert = ' ';
+			charToInsert = " ";
+			try {
+				insert();
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+			break;
+		case KeyEvent.VK_ENTER:
+			charToInsert = "\n";
 			try {
 				insert();
 			} catch (Exception e1) {
@@ -315,7 +323,7 @@ public class TextEditor extends JFrame implements KeyListener, ActionListener {
 	/**
 	 * @return the character to insert in the buffer
 	 */
-	public char getCharToInsert() {
+	public String getCharToInsert() {
 		return charToInsert;
 	}
 
@@ -400,7 +408,7 @@ public class TextEditor extends JFrame implements KeyListener, ActionListener {
 	 * 
 	 * @param mChar a char to insert in the editor
 	 */
-	public void setCharToInsert(char mChar) {
+	public void setCharToInsert(String mChar) {
 		charToInsert = mChar;
 	}
 

@@ -63,7 +63,7 @@ public class EditorTest {
 
 	@Test
 	public void testSelection() throws Exception {
-		textEditor.setCharToInsert('C');
+		textEditor.setCharToInsert("C");
 		textEditor.insert();
 		assertEquals("C", textEditor.getText());
 		textEditor.setCaretPosition(0, 1);
@@ -73,10 +73,10 @@ public class EditorTest {
 
 	@Test
 	public void testInsert() throws Exception {
-		textEditor.setCharToInsert('C');
+		textEditor.setCharToInsert("C");
 		textEditor.insert();
 		assertEquals("C", textEditor.getText());
-		textEditor.setCharToInsert('C');
+		textEditor.setCharToInsert("C");
 		textEditor.insert();
 		textEditor.insert();
 		assertEquals("CCC", textEditor.getText());
@@ -84,10 +84,10 @@ public class EditorTest {
 
 	@Test
 	public void testInsertOnSelection() throws Exception {
-		textEditor.setCharToInsert('C');
+		textEditor.setCharToInsert("C");
 		textEditor.insert();
 		assertEquals("C", textEditor.getText());
-		textEditor.setCharToInsert('C');
+		textEditor.setCharToInsert("C");
 		textEditor.insert();
 		textEditor.insert();
 		assertEquals("CCC", textEditor.getText());
@@ -103,7 +103,7 @@ public class EditorTest {
 	public void testEditorCharetAfterInsert() throws Exception {
 		assertEquals(0, textEditor.getSelectionStartIndex());
 		assertEquals(0, textEditor.getSelectionEndIndex());
-		textEditor.setCharToInsert('C');
+		textEditor.setCharToInsert("C");
 		textEditor.insert();
 		assertEquals("C", textEditor.getText());
 		assertEquals(1, textEditor.getSelectionStartIndex());
@@ -112,7 +112,7 @@ public class EditorTest {
 
 	@Test
 	public void testEditorCharetAfteDelete() throws Exception {
-		textEditor.setCharToInsert('C');
+		textEditor.setCharToInsert("C");
 		textEditor.insert();
 		textEditor.delete();
 		assertEquals(0, textEditor.getSelectionStartIndex());
@@ -121,14 +121,14 @@ public class EditorTest {
 
 	@Test
 	public void testInsertNumber() throws Exception {
-		textEditor.setCharToInsert('1');
+		textEditor.setCharToInsert("1");
 		textEditor.insert();
 		assertEquals("1", textEditor.getText());
 	}
 
 	@Test
 	public void testDelete() throws Exception {
-		textEditor.setCharToInsert('1');
+		textEditor.setCharToInsert("1");
 		textEditor.insert();
 		textEditor.insert();
 		textEditor.delete();
@@ -148,13 +148,13 @@ public class EditorTest {
 
 	@Test
 	public void testDeleteSpace() throws Exception {
-		textEditor.setCharToInsert(' ');
+		textEditor.setCharToInsert(" ");
 		textEditor.insert();
 		textEditor.delete();
 		assertEquals("", textEditor.getText());
-		textEditor.setCharToInsert('b');
+		textEditor.setCharToInsert("b");
 		textEditor.insert();
-		textEditor.setCharToInsert(' ');
+		textEditor.setCharToInsert(" ");
 		textEditor.insert();
 		textEditor.delete();
 		assertEquals("b", textEditor.getText());
@@ -162,14 +162,14 @@ public class EditorTest {
 
 	@Test
 	public void testDeleteSelection() throws Exception {
-		textEditor.setCharToInsert('b');
+		textEditor.setCharToInsert("b");
 		textEditor.insert();
-		textEditor.setCharToInsert(' ');
+		textEditor.setCharToInsert(" ");
 		textEditor.insert();
 		textEditor.setCaretPosition(0, 2);
 		textEditor.delete();
 		assertEquals("", textEditor.getText());
-		textEditor.setCharToInsert('b');
+		textEditor.setCharToInsert("b");
 		textEditor.insert();
 		textEditor.insert();
 		textEditor.setCaretPosition(0, 1);
@@ -185,9 +185,9 @@ public class EditorTest {
 
 	@Test
 	public void testCopySelection() throws Exception {
-		textEditor.setCharToInsert('a');
+		textEditor.setCharToInsert("a");
 		textEditor.insert();
-		textEditor.setCharToInsert('b');
+		textEditor.setCharToInsert("b");
 		textEditor.insert();
 		textEditor.setCaretPosition(0, 1);
 		textEditor.copy();
@@ -196,7 +196,7 @@ public class EditorTest {
 
 	@Test
 	public void testCopySpace() throws Exception {
-		textEditor.setCharToInsert(' ');
+		textEditor.setCharToInsert(" ");
 		textEditor.insert();
 		textEditor.setCaretPosition(0, 1);
 		textEditor.copy();
@@ -212,7 +212,7 @@ public class EditorTest {
 
 	@Test
 	public void testPasteClipboardContentOnSelection() throws Exception {
-		textEditor.setCharToInsert('a');
+		textEditor.setCharToInsert("a");
 		textEditor.insert();
 		textEditor.setCaretPosition(0, 1);
 		textEditor.copy();
@@ -223,7 +223,7 @@ public class EditorTest {
 
 	@Test
 	public void testPasteClipboardContent() throws Exception {
-		textEditor.setCharToInsert('a');
+		textEditor.setCharToInsert("a");
 		textEditor.insert();
 		textEditor.setCaretPosition(0, 1);
 		textEditor.copy();
@@ -242,7 +242,7 @@ public class EditorTest {
 
 	@Test
 	public void testCutSelection() throws Exception {
-		textEditor.setCharToInsert('a');
+		textEditor.setCharToInsert("a");
 		textEditor.insert();
 		textEditor.setCaretPosition(0, 1);
 		textEditor.cut();
@@ -251,7 +251,7 @@ public class EditorTest {
 
 	@Test
 	public void testPasteAfterCuttingSelection() throws Exception {
-		textEditor.setCharToInsert('a');
+		textEditor.setCharToInsert("a");
 		textEditor.insert();
 		textEditor.setCaretPosition(0, 1);
 		textEditor.cut();
@@ -270,7 +270,7 @@ public class EditorTest {
 	public void testEmptyRedo() throws Exception {
 		textEditor.redo();
 		assertEquals("", textEditor.getText());
-		textEditor.setCharToInsert('x');
+		textEditor.setCharToInsert("x");
 		textEditor.insert();
 		textEditor.redo();
 		assertEquals("x", textEditor.getText());
@@ -278,7 +278,7 @@ public class EditorTest {
 
 	@Test
 	public void testUndoAfterInserting1() throws Exception {
-		textEditor.setCharToInsert('a');
+		textEditor.setCharToInsert("a");
 		textEditor.insert();
 		textEditor.insert();
 		textEditor.undo();
@@ -287,9 +287,9 @@ public class EditorTest {
 
 	@Test
 	public void testUndoAfterInserting2() throws Exception {
-		textEditor.setCharToInsert('a');
+		textEditor.setCharToInsert("a");
 		textEditor.insert();
-		textEditor.setCharToInsert('b');
+		textEditor.setCharToInsert("b");
 		textEditor.insert();
 		textEditor.undo();
 		assertEquals("a", textEditor.getText());
@@ -297,9 +297,9 @@ public class EditorTest {
 
 	@Test
 	public void testUndoAfterInserting3() throws Exception {
-		textEditor.setCharToInsert('a');
+		textEditor.setCharToInsert("a");
 		textEditor.insert();
-		textEditor.setCharToInsert('b');
+		textEditor.setCharToInsert("b");
 		textEditor.insert();
 		textEditor.undo();
 		textEditor.undo();
@@ -308,7 +308,7 @@ public class EditorTest {
 
 	@Test
 	public void testUndoAfterCopy() throws Exception {
-		textEditor.setCharToInsert('a');
+		textEditor.setCharToInsert("a");
 		textEditor.insert();
 		textEditor.setCaretPosition(0, 1);
 		textEditor.copy();
@@ -326,7 +326,7 @@ public class EditorTest {
 
 	@Test
 	public void testRedoAfterUndo() throws Exception {
-		textEditor.setCharToInsert('a');
+		textEditor.setCharToInsert("a");
 		textEditor.insert();
 		textEditor.insert();
 		textEditor.undo();
@@ -336,7 +336,7 @@ public class EditorTest {
 
 	@Test
 	public void testRedoAfterPasting() throws Exception {
-		textEditor.setCharToInsert('a');
+		textEditor.setCharToInsert("a");
 		textEditor.insert();
 		textEditor.setCaretPosition(0, 1);
 		textEditor.copy();
@@ -349,7 +349,7 @@ public class EditorTest {
 
 	@Test
 	public void testReplayForInsertion() throws Exception {
-		textEditor.setCharToInsert('a');
+		textEditor.setCharToInsert("a");
 		textEditor.insert();
 		textEditor.replay();
 		assertEquals("aa", textEditor.getText());
@@ -357,7 +357,7 @@ public class EditorTest {
 
 	@Test
 	public void testReplayForCuting() throws Exception {
-		textEditor.setCharToInsert('a');
+		textEditor.setCharToInsert("a");
 		textEditor.insert();
 		textEditor.setCaretPosition(0, 1);
 		textEditor.cut();

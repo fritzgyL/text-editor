@@ -11,7 +11,7 @@ public class InvokerImpl implements Invoker {
 
 	@Override
 	public void insert(ICommand insertCommand) throws Exception {
-		((InsertCommand) insertCommand).setText(Character.toString(editor.getCharToInsert()));
+		((InsertCommand) insertCommand).setText(editor.getCharToInsert());
 		Text text = insertCommand.execute();
 		editor.setInsertCommandState(((InsertCommand) insertCommand).save());
 		updateText(text);
