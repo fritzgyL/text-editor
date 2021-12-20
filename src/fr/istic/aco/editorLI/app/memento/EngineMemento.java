@@ -15,7 +15,6 @@ public class EngineMemento implements Memento {
 
 	@Override
 	public Text getText() {
-		// TODO Auto-generated method stub
 		return new Text(content, new int[] { charetStartPosition, charetEndPosition });
 	}
 
